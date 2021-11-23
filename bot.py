@@ -18,8 +18,8 @@ white_list = [
     650633031064879125, # Homura
     720994385382080552, # Matler
 ]
-logs_channel =  bot.get_channel(912781470668582962)
 bot = commands.Bot(command_prefix="h>")
+logs_channel =  bot.get_channel(912781470668582962)
 bot.remove_command("help")
 
 def on_ready():
