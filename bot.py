@@ -31,14 +31,14 @@ async def on_command(message):
         return
 
     if message.author.id == white_list[0]: # Bayonetta
-        logs_channel.send("Bayonetta: {}".format(message.content))
+        await logs_channel.send("Bayonetta: {}".format(message.content))
         return
 
-    await AntiScam(message, bot = bot, whitelist = whitelist, muted_role='Muted', verified_role='member', logs_channel=logs_channel)
+    if message.author.id == 654134051854352404: # Samus
+        await logs_channel.send("Samus: {}".format(message.content))
+        return
 
-    if message.content.startswith('homuri'):
-        channel = message.channel
-        await channel.send('Hello!')
+    await AntiScam(message, bot = bot, whitelist = white_list, muted_role='Muted', verified_role='member', logs_channel=logs_channel)
 
 @bot.command(name="homuri")
 async def name(ctx):
