@@ -18,20 +18,17 @@ white_list = [
     650633031064879125, # Homura
     720994385382080552, # Matler
 ]
-log_channel = bot.get_channel(912781470668582962)
 
 bot = commands.Bot(command_prefix="h>")
 log_channel = None
 bot.remove_command("help")
 
-@bot.event
-def on_ready():
+async def on_ready():
     print("Bot is online")
-    log_channel = bot.get_channel(912781470668582962)
+    log_channel = bot.get_channel(912781470668582962) # FIXME
 
-@bot.listen()
 async def on_message(message):
-    print(message.content)
+    log_channel = bot.get_channel(912781470668582962)
     if message.author.id == 863062654699438110: # Bot itself
         return
 
@@ -43,7 +40,7 @@ async def on_message(message):
         await log_channel.send("Samus: {}".format(message.content))
         return
 
-    await AntiScam(message, bot = bot, whitelist = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel)
+    # await AntiScam(message, bot = bot, whitelist = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel) # FIXME
 
 @bot.command(name="homuri")
 async def name(ctx):
@@ -54,4 +51,6 @@ async def ping(ctx):
     await ctx.send("pong")
 
 ## Run
+bot.add_listener(on_ready)
+bot.add_listener(on_message, "on_message")
 bot.run(TOKEN)
