@@ -18,17 +18,16 @@ white_list = [
     650633031064879125, # Homura
     720994385382080552, # Matler
 ]
+log_channel = bot.get_channel(912781470668582962)
+
 bot = commands.Bot(command_prefix="h>")
-logs_channel =  bot.get_channel(912781470668582962)
+log_channel = None
 bot.remove_command("help")
 
+@bot.event
 def on_ready():
     print("Bot is online")
-
-@bot.event
-async def on_event(message):
-    print("message by event: {}".format(message.content))
-
+    log_channel = bot.get_channel(912781470668582962)
 
 @bot.listen()
 async def on_message(message):
@@ -37,14 +36,14 @@ async def on_message(message):
         return
 
     if message.author.id == white_list[0]: # Bayonetta
-        await logs_channel.send("Bayonetta: {}".format(message.content))
+        await log_channel.send("Bayonetta: {}".format(message.content))
         return
 
     if message.author.id == 654134051854352404: # Samus
-        await logs_channel.send("Samus: {}".format(message.content))
+        await log_channel.send("Samus: {}".format(message.content))
         return
 
-    await AntiScam(message, bot = bot, whitelist = white_list, muted_role='Muted', verified_role='member', logs_channel=logs_channel)
+    await AntiScam(message, bot = bot, whitelist = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel)
 
 @bot.command(name="homuri")
 async def name(ctx):
@@ -55,5 +54,4 @@ async def ping(ctx):
     await ctx.send("pong")
 
 ## Run
-on_ready()
 bot.run(TOKEN)
