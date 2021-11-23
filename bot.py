@@ -28,9 +28,11 @@ async def on_ready():
     log_channel = bot.get_channel(912781470668582962) # FIXME
 
 async def on_message(message):
-    log_channel = bot.get_channel(912781470668582962)
     if message.author.id == 863062654699438110: # Bot itself
         return
+
+    ## General logic
+    log_channel = bot.get_channel(912781470668582962) # Log channel
 
     if message.author.id == white_list[0]: # Bayonetta
         await log_channel.send("Bayonetta: {}".format(message.content))
@@ -40,11 +42,11 @@ async def on_message(message):
         await log_channel.send("Samus: {}".format(message.content))
         return
 
-    # await AntiScam(message, bot = bot, whitelist = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel) # FIXME
+    await AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel)
 
 @bot.command(name="homuri")
 async def name(ctx):
-    await ctx.send(f"{ctx.author.mention} hello uwu")
+    await ctx.send("{} hello uwu".format(ctx.author.mention))
 
 @bot.command()
 async def ping(ctx):
