@@ -1,0 +1,3 @@
+[submodule "AntiScam"]
+	path = AntiScam
+	url = git@github.com:jeancahu/AntiScam.git
