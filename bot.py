@@ -25,8 +25,14 @@ bot.remove_command("help")
 def on_ready():
     print("Bot is online")
 
+@bot.event
+async def on_event(message):
+    print("message by event: {}".format(message.content))
+
+
 @bot.listen()
-async def on_command(message):
+async def on_message(message):
+    print(message.content)
     if message.author.id == 863062654699438110: # Bot itself
         return
 
