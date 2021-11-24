@@ -1,5 +1,6 @@
 # GNP Bot
 
+import discord
 from discord.ext import commands
 from sys import exit
 from AntiScam import AntiScam
@@ -51,6 +52,15 @@ async def name(ctx):
 @bot.command()
 async def ping(ctx):
     await ctx.send("pong")
+
+@bot.command()
+async def samus(ctx):
+    embed=discord.Embed(
+        title="Samus",
+        description='Puertorrican papi',
+        color=0x6600a1)
+    embed.set_image(url="https://cdn.discordapp.com/attachments/663632517760286721/912942124880777267/bf9a5e34e0ed726d100e96b5a9ecbb41.png")
+    await ctx.send(embed=embed)
 
 ## Run
 bot.add_listener(on_ready)
