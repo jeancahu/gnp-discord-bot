@@ -3,6 +3,7 @@
 import discord
 from discord.ext import commands
 from sys import exit
+from time import sleep
 from random import choice
 from AntiScam import AntiScam
 
@@ -44,7 +45,7 @@ async def on_message(message):
         await log_channel.send("Samus: {}".format(message.content))
         return
 
-    await AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel)
+    await AntiScam.AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel)
 
 @bot.command(name="homuri")
 async def name(ctx):
@@ -67,7 +68,14 @@ async def samus(ctx):
             "https://cdn.discordapp.com/attachments/663632517760286721/912942199870734406/c611209542819b6097fecc8c4b125869.png",
         ]
     ))
-    await ctx.send(embed=embed)
+    message = await ctx.send(embed=embed)
+    embed.set_footer(text = "Love you {}".format("baby"))
+
+    sleep(1)
+    await message.edit(embed=embed)
+
+    sleep(1)
+    await message.delete()
 
 ## Run
 bot.add_listener(on_ready)
