@@ -3,6 +3,7 @@
 import discord
 from discord.ext import commands
 from sys import exit
+from random import choice
 from AntiScam import AntiScam
 
 try:
@@ -59,7 +60,13 @@ async def samus(ctx):
         title="Samus",
         description='Puertorrican papi',
         color=0x6600a1)
-    embed.set_image(url="https://cdn.discordapp.com/attachments/663632517760286721/912942124880777267/bf9a5e34e0ed726d100e96b5a9ecbb41.png")
+    embed.set_image(url=choice(
+        [
+            "https://cdn.discordapp.com/attachments/663632517760286721/912942124880777267/bf9a5e34e0ed726d100e96b5a9ecbb41.png",
+            "https://cdn.discordapp.com/attachments/663632517760286721/912942199535198228/PXL_20211029_171006493.jpg",
+            "https://cdn.discordapp.com/attachments/663632517760286721/912942199870734406/c611209542819b6097fecc8c4b125869.png",
+        ]
+    ))
     await ctx.send(embed=embed)
 
 ## Run
