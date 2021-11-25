@@ -31,6 +31,9 @@ async def on_ready():
     log_channel = bot.get_channel(912781470668582962) # FIXME
 
 async def on_message(message):
+    if not message.guild.id == 699053837360824414: # Works for gnp server only
+        return
+
     if message.author.id == 863062654699438110: # Bot itself
         return
 
@@ -49,14 +52,23 @@ async def on_message(message):
 
 @bot.command(name="homuri")
 async def name(ctx):
+    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+        return
+
     await ctx.send("{} hello uwu".format(ctx.author.mention))
 
 @bot.command()
 async def ping(ctx):
+    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+        return
+
     await ctx.send("pong")
 
 @bot.command()
 async def samus(ctx):
+    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+        return
+
     embed=discord.Embed(
         title="Samus",
         description='Puertorrican papi',
