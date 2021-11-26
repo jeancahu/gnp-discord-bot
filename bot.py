@@ -82,17 +82,17 @@ async def samus(ctx):
         description='Puertorrican papi',
         color=0x6600a1)
     embed.set_image(
-        fotos_samus[0]
+        url=fotos_samus[0]
     )
     embed.set_footer(text = "Love you {}".format("baby"))
     message = await ctx.send(embed=embed)
 
-    # for foto in fotos_samus[1:]:
-    #     sleep(3)
-    #     embed.set_image(
-    #         foto
-    #     )
-    #     await message.edit(embed=embed)
+    for foto in fotos_samus[1:]:
+        sleep(3)
+        embed.set_image(
+            url=foto
+        )
+        await message.edit(embed=embed)
 
     sleep(3)
     await message.delete()
