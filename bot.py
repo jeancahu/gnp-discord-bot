@@ -85,15 +85,14 @@ async def samus(ctx):
         fotos_samus[0]
     )
     embed.set_footer(text = "Love you {}".format("baby"))
-
     message = await ctx.send(embed=embed)
 
-    for foto in fotos_samus[1:]:
-        sleep(3)
-        embed.set_image(
-            foto
-        )
-        await message.edit(embed=embed)
+    # for foto in fotos_samus[1:]:
+    #     sleep(3)
+    #     embed.set_image(
+    #         foto
+    #     )
+    #     await message.edit(embed=embed)
 
     sleep(3)
     await message.delete()
