@@ -85,6 +85,11 @@ async def samus(ctx):
         url=fotos_samus[0]
     )
     embed.set_footer(text = "Love you {}".format("baby"))
+
+    message = await ctx.send("can we skip to the good part?")
+    sleep(1)
+    await message.delete()
+
     message = await ctx.send(embed=embed)
 
     for foto in fotos_samus[1:]:
