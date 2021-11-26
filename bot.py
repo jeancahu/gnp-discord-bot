@@ -88,13 +88,13 @@ async def samus(ctx):
     message = await ctx.send(embed=embed)
 
     for foto in fotos_samus[1:]:
-        sleep(3)
+        sleep(0.9)
         embed.set_image(
             url=foto
         )
         await message.edit(embed=embed)
 
-    sleep(3)
+    sleep(0.9)
     await message.delete()
 
 ## Run
