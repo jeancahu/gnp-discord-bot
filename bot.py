@@ -22,6 +22,14 @@ white_list = [
     720994385382080552, # Matler
 ]
 
+fotos_samus = [
+    "https://cdn.discordapp.com/attachments/663632517760286721/912942124880777267/bf9a5e34e0ed726d100e96b5a9ecbb41.png",
+    "https://cdn.discordapp.com/attachments/663632517760286721/912942199535198228/PXL_20211029_171006493.jpg",
+    "https://cdn.discordapp.com/attachments/663632517760286721/912942199870734406/c611209542819b6097fecc8c4b125869.png",
+    "https://cdn.discordapp.com/attachments/663632517760286721/913130119223185469/29472957_1555896997793329_4544933610943152128_o.jpg",
+]
+
+
 bot = commands.Bot(command_prefix="h>")
 log_channel = None
 bot.remove_command("help")
@@ -73,18 +81,19 @@ async def samus(ctx):
         title="Samus",
         description='Puertorrican papi',
         color=0x6600a1)
-    embed.set_image(url=choice(
-        [
-            "https://cdn.discordapp.com/attachments/663632517760286721/912942124880777267/bf9a5e34e0ed726d100e96b5a9ecbb41.png",
-            "https://cdn.discordapp.com/attachments/663632517760286721/912942199535198228/PXL_20211029_171006493.jpg",
-            "https://cdn.discordapp.com/attachments/663632517760286721/912942199870734406/c611209542819b6097fecc8c4b125869.png",
-        ]
-    ))
-    message = await ctx.send(embed=embed)
+    embed.set_image(
+        fotos_samus[0]
+    )
     embed.set_footer(text = "Love you {}".format("baby"))
 
-    sleep(1)
-    await message.edit(embed=embed)
+    message = await ctx.send(embed=embed)
+
+    for foto in fotos_samus[1:]:
+        sleep(1)
+        embed.set_image(
+            foto
+        )
+        await message.edit(embed=embed)
 
     sleep(1)
     await message.delete()
