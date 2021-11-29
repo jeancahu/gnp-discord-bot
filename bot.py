@@ -3,7 +3,7 @@
 import discord
 from discord.ext import commands
 from sys import exit
-from time import sleep
+from time import sleep, time
 from random import choice
 from AntiScam import AntiScam
 
@@ -33,6 +33,7 @@ fotos_samus = [
 bot = commands.Bot(command_prefix="h>")
 log_channel = None
 bot.remove_command("help")
+protection = time() # Time until we can use command again
 
 async def on_ready():
     print("Bot is online")
@@ -73,8 +74,19 @@ async def ping(ctx):
     await ctx.send("pong")
 
 @bot.command()
+async def defme(ctx):
+    global protection
+    protection = protection + 8*60*60 # protection for 8 hours
+    ctx.send("Estás protegido por 8 horas a partir de ahora bebé")
+
+@bot.command()
 async def samus(ctx):
+    global protection
     if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+        pass #return
+
+    if protection > time():
+        await ctx.send("Quedan {} horas de protección :c".format((protection-time())/(60*60)))
         return
 
     embed=discord.Embed(
