@@ -76,17 +76,23 @@ async def ping(ctx):
 @bot.command()
 async def defme(ctx):
     global protection
-    protection = protection + 8*60*60 # protection for 8 hours
-    ctx.send("Estás protegido por 8 horas a partir de ahora bebé")
+    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+        return
+
+    if ctx.author.id == 654134051854352404:
+        protection = protection + 8*60*60 # protection for 8 hours
+        await ctx.send("Estás protegido por 8 horas a partir de ahora bebé")
+    else:
+        await ctx.send("Hey tú no eres samus!")
 
 @bot.command()
 async def samus(ctx):
     global protection
     if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-        pass #return
+        return
 
     if protection > time():
-        await ctx.send("Quedan {} horas de protección :c".format((protection-time())/(60*60)))
+        await ctx.send("Quedan {:.2f} horas de protección :c".format((protection-time())/(60*60)))
         return
 
     embed=discord.Embed(
