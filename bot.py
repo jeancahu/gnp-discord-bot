@@ -33,7 +33,7 @@ fotos_samus = [
 bot = commands.Bot(command_prefix="h>")
 log_channel = None
 bot.remove_command("help")
-protection = time() # Time until we can use command again
+protection = time() + 8*60*60 # Time until we can use command again
 
 async def on_ready():
     print("Bot is online")
@@ -80,7 +80,7 @@ async def defme(ctx):
         return
 
     if ctx.author.id == 654134051854352404:
-        protection = protection + 8*60*60 # protection for 8 hours
+        protection = time() + 8*60*60 # protection for 8 hours
         await ctx.send("Estás protegido por 8 horas a partir de ahora bebé")
     else:
         await ctx.send("Hey tú no eres samus!")
