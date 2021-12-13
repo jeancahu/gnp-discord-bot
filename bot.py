@@ -97,11 +97,11 @@ async def div(ctx):
     # Cooldown
 
     if div_cooldown > time():
-        await ctx.send("Debes esperar {:.2f} minutos de cooldown".format((protection-time())/(60)))
+        await ctx.send("Debes esperar {:.2f} minutos de cooldown".format((div_cooldown-time())/(60)))
         return
 
 
-    protection = int(protection/2)
+    protection = int(time() - ((protection - time())/2))
     div_cooldown = time() + 60*60
 
     embed=discord.Embed(
