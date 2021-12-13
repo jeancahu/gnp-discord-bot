@@ -101,7 +101,7 @@ async def div(ctx):
         return
 
 
-    protection = int(time() - ((protection - time())/2))
+    protection = int(time() + ((protection - time())/2))
     div_cooldown = time() + 60*60
 
     embed=discord.Embed(
