@@ -34,8 +34,11 @@ bot = commands.Bot(command_prefix="h>")
 log_channel = None
 bot.remove_command("help")
 protection = time() + 8*60*60 # Time until we can use command again
+protection_cooldown = 0
+
 div_cooldown = 0 # Time until we can use command again
 steal_cooldown = 0 # Time until we can use command again
+esama_cooldown = 0
 
 async def on_ready():
     print("Bot is online")
@@ -78,14 +81,29 @@ async def ping(ctx):
 @bot.command()
 async def defme(ctx):
     global protection
+    global protection_cooldown
+
     if not ctx.guild.id == 699053837360824414: # Works for gnp server only
         return
 
-    if ctx.author.id == 654134051854352404:
-        protection = time() + 8*60*60 # protection for 8 hours
-        await ctx.send("Estás protegido por 8 horas a partir de ahora bebé")
-    else:
+    if not ctx.author.id == 654134051854352404:
         await ctx.send("Hey tú no eres samus!")
+        return
+
+    if protection_cooldown > time():
+        embed=discord.Embed(
+            title="Homura no tiene energía",
+            description="Debes esperar {:.2f} horas de cooldown".format((protection_cooldown-time())/(60*60)),
+            color=0x6600a1)
+        embed.set_image(
+            url="https://vigarathtalks.files.wordpress.com/2014/07/tumblr_n388p3c4e11r2heyno2_500.gif"
+        )
+        embed.set_footer(text = "No he logrado defenderte...")
+        message = await ctx.send(embed=embed)
+        return
+
+    protection = time() + 8*60*60 # protection for 8 hours
+    await ctx.send("Estás protegido por 8 horas a partir de ahora bebé")
 
 @bot.command()
 async def div(ctx):
@@ -141,6 +159,35 @@ async def steal(ctx):
         color=0x6600a1)
     embed.set_image(
         url='https://cdn.discordapp.com/attachments/861388324597399584/919980690630647908/steal.gif'
+    )
+    embed.set_footer(text = "Love you {}".format("baby"))
+    message = await ctx.send(embed=embed)
+    # sleep(0.9)
+    # await message.delete()
+
+@bot.command()
+async def esama(ctx):
+    global protection_cooldown
+    global esama_cooldown
+
+    # if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+    #     return
+
+    # Cooldown
+
+    if esama_cooldown > time():
+        await ctx.send("Debes esperar {:.2f} horas de cooldown".format((esama_cooldown-time())/(60*60)))
+        return
+
+    protection_cooldown = int(time() + 60*60)
+    esama_cooldown = time() + 60*60*3
+
+    embed=discord.Embed(
+        title="Esdeath-sama",
+        description='El comando de protección queda congelado por una hora',
+        color=0x6600a1)
+    embed.set_image(
+        url="https://i.pinimg.com/originals/68/ef/9a/68ef9a274152da8e75eccfd47343e5c4.gif"
     )
     embed.set_footer(text = "Love you {}".format("baby"))
     message = await ctx.send(embed=embed)
