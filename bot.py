@@ -34,6 +34,7 @@ bot = commands.Bot(command_prefix="h>")
 log_channel = None
 bot.remove_command("help")
 protection = time() + 8*60*60 # Time until we can use command again
+div_cooldown = 0 # Time until we can use command again
 
 async def on_ready():
     print("Bot is online")
@@ -84,6 +85,37 @@ async def defme(ctx):
         await ctx.send("Estás protegido por 8 horas a partir de ahora bebé")
     else:
         await ctx.send("Hey tú no eres samus!")
+
+@bot.command()
+async def div(ctx):
+    global protection
+    global div_cooldown
+
+    # if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+    #     return
+
+    # Cooldown
+
+    if div_cooldown > time():
+        await ctx.send("Debes esperar {:.2f} minutos de cooldown".format((protection-time())/(60)))
+        return
+
+
+    protection = int(protection/2)
+    div_cooldown = time() + 60*60
+
+    embed=discord.Embed(
+        title="Divine dividing",
+        description='Samus pierde la mitad de su poder protector',
+        color=0x6600a1)
+    embed.set_image(
+        url='https://cdn.discordapp.com/attachments/861388324597399584/919971231351074907/latest.png'
+    )
+    embed.set_footer(text = "Love you {}".format("baby"))
+    message = await ctx.send(embed=embed)
+    # sleep(0.9)
+    # await message.delete()
+
 
 @bot.command()
 async def samus(ctx):
