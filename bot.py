@@ -35,6 +35,7 @@ log_channel = None
 bot.remove_command("help")
 protection = time() + 8*60*60 # Time until we can use command again
 div_cooldown = 0 # Time until we can use command again
+steal_cooldown = 0 # Time until we can use command again
 
 async def on_ready():
     print("Bot is online")
@@ -116,6 +117,35 @@ async def div(ctx):
     # sleep(0.9)
     # await message.delete()
 
+@bot.command()
+async def steal(ctx):
+    global protection
+    global steal_cooldown
+
+    # if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+    #     return
+
+    # Cooldown
+
+    if steal_cooldown > time():
+        await ctx.send("Debes esperar {:.2f} minutos de cooldown".format((steal_cooldown-time())/(60)))
+        return
+
+
+    protection = int(protection - 60*60)
+    steal_cooldown = time() + 40*60
+
+    embed=discord.Embed(
+        title="Steal",
+        description='Una hora de protección es robada',
+        color=0x6600a1)
+    embed.set_image(
+        url='https://cdn.discordapp.com/attachments/861388324597399584/919980690630647908/steal.gif'
+    )
+    embed.set_footer(text = "Love you {}".format("baby"))
+    message = await ctx.send(embed=embed)
+    # sleep(0.9)
+    # await message.delete()
 
 @bot.command()
 async def samus(ctx):
