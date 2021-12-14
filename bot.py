@@ -23,17 +23,23 @@ white_list = [
 ]
 
 fotos_samus = [
-    "https://cdn.discordapp.com/attachments/663632517760286721/912942124880777267/bf9a5e34e0ed726d100e96b5a9ecbb41.png",
-    "https://cdn.discordapp.com/attachments/663632517760286721/912942199535198228/PXL_20211029_171006493.jpg",
-    "https://cdn.discordapp.com/attachments/663632517760286721/912942199870734406/c611209542819b6097fecc8c4b125869.png",
-    "https://cdn.discordapp.com/attachments/663632517760286721/913130119223185469/29472957_1555896997793329_4544933610943152128_o.jpg",
+    # samus fotos
+    # "https://cdn.discordapp.com/attachments/663632517760286721/912942124880777267/bf9a5e34e0ed726d100e96b5a9ecbb41.png",
+    # "https://cdn.discordapp.com/attachments/663632517760286721/912942199535198228/PXL_20211029_171006493.jpg",
+    # "https://cdn.discordapp.com/attachments/663632517760286721/912942199870734406/c611209542819b6097fecc8c4b125869.png",
+    # "https://cdn.discordapp.com/attachments/663632517760286721/913130119223185469/29472957_1555896997793329_4544933610943152128_o.jpg",
+
+    # cabrito
+    "https://media.discordapp.net/attachments/686816510710120483/836615939965452298/photo_2021-04-24_18-55-13.jpg?width=748&height=561",
+    "https://media.discordapp.net/attachments/686816510710120483/842208208096591902/photo_2021-05-12_19-13-44.jpg?width=997&height=561",
+    "https://media.discordapp.net/attachments/686816510710120483/911457815468597248/unknown.png?width=748&height=561",
 ]
 
 
 bot = commands.Bot(command_prefix="h>")
 log_channel = None
 bot.remove_command("help")
-protection = time() + 8*60*60 # Time until we can use command again
+protection = 0 #time() + 8*60*60 # Time until we can use command again
 protection_cooldown = 0
 
 div_cooldown = 0 # Time until we can use command again
@@ -205,8 +211,8 @@ async def samus(ctx):
         return
 
     embed=discord.Embed(
-        title="Samus",
-        description='Puertorrican papi',
+        title="Cabrito",
+        description='Cabrito wonito',
         color=0x6600a1)
     embed.set_image(
         url=fotos_samus[0]
