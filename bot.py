@@ -28,7 +28,7 @@ def cooldown_message (cooldown):
 
 ## Users list
 samus = (654134051854352404, "Samus")
-
+bayo = (649724009243738122, "Nabonetta")
 
 ## Decorators
 
@@ -145,9 +145,10 @@ async def defme(ctx):
     protection = time() + 8*60*60 # protection for 8 hours
     await ctx.send("Estás protegido por **8** horas a partir de ahora bebé")
 
-# @only_for_user(user_id=bayo[0], user_name=bayo[1])
+
 @bot.command()
 @guild_only
+@only_for_user(user_id=bayo[0], user_name=bayo[1])
 async def bayo(ctx):
     image = choice([
         "https://cdn.discordapp.com/attachments/663632517760286721/920540272725733396/530c773218db6a7d39bc953bdc1e6447.jpg",
