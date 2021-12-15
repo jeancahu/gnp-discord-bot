@@ -24,6 +24,13 @@ def cooldown_message (cooldown):
         minutes
     )
 
+async def guild_only(func):
+    def wrapper(ctx):
+        if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+            return
+        func(ctx)
+    return(wrapper)
+
 try:
     TOKEN = open("TOKEN").readline().replace('\n','')
 except Exception as e:
@@ -40,12 +47,6 @@ white_list = [
 ]
 
 fotos_samus = [
-    # samus fotos
-    # "https://cdn.discordapp.com/attachments/663632517760286721/912942124880777267/bf9a5e34e0ed726d100e96b5a9ecbb41.png",
-    # "https://cdn.discordapp.com/attachments/663632517760286721/912942199535198228/PXL_20211029_171006493.jpg",
-    # "https://cdn.discordapp.com/attachments/663632517760286721/912942199870734406/c611209542819b6097fecc8c4b125869.png",
-    # "https://cdn.discordapp.com/attachments/663632517760286721/913130119223185469/29472957_1555896997793329_4544933610943152128_o.jpg",
-
     # cabrito
     "https://media.discordapp.net/attachments/686816510710120483/836615939965452298/photo_2021-04-24_18-55-13.jpg?width=748&height=561",
     "https://media.discordapp.net/attachments/686816510710120483/842208208096591902/photo_2021-05-12_19-13-44.jpg?width=997&height=561",
@@ -67,10 +68,8 @@ async def on_ready():
     print("Bot is online")
     log_channel = bot.get_channel(912781470668582962) # FIXME
 
+@guild_only
 async def on_message(message):
-    if not message.guild.id == 699053837360824414: # Works for gnp server only
-        return
-
     if message.author.id == 863062654699438110: # Bot itself
         return
 
@@ -89,25 +88,17 @@ async def on_message(message):
 
 @bot.command(name="homuri")
 async def name(ctx):
-    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-        return
-
     await ctx.send("{} hello uwu".format(ctx.author.mention))
 
 @bot.command()
 async def ping(ctx):
-    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-        return
-
     await ctx.send("pong")
 
 @bot.command()
+@guild_only
 async def defme(ctx):
     global protection
     global protection_cooldown
-
-    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-        return
 
     if not ctx.author.id == 654134051854352404:
         await ctx.send("Hey tú no eres samus!")
@@ -129,12 +120,10 @@ async def defme(ctx):
     await ctx.send("Estás protegido por **8** horas a partir de ahora bebé")
 
 @bot.command()
+@guild_only
 async def div(ctx):
     global protection
     global div_cooldown
-
-    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-        return
 
     # Cooldown
 
@@ -160,12 +149,10 @@ async def div(ctx):
     # await message.delete()
 
 @bot.command()
+@guild_only
 async def steal(ctx):
     global protection
     global steal_cooldown
-
-    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-        return
 
     # Cooldown
 
@@ -192,12 +179,10 @@ async def steal(ctx):
     # await message.delete()
 
 @bot.command()
+@guild_only
 async def esama(ctx):
     global protection_cooldown
     global esama_cooldown
-
-    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-        return
 
     # Cooldown
 
@@ -223,10 +208,9 @@ async def esama(ctx):
     # await message.delete()
 
 @bot.command()
+@guild_only
 async def samus(ctx):
     global protection
-    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-        return
 
     if protection > time():
         await ctx.send(
