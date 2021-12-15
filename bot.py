@@ -10,7 +10,7 @@ from math import modf as fract
 
 def mins_hours_until (seconds):
     minutes, hours = fract((seconds - time())/(60*60))
-    return (minutes*60, hours)
+    return (int(minutes*60), int(hours))
 
 try:
     TOKEN = open("TOKEN").readline().replace('\n','')
@@ -104,7 +104,7 @@ async def defme(ctx):
     if protection_cooldown > time():
         embed=discord.Embed(
             title="Homura no tiene energía",
-            description="Debes esperar {0[1]} horas con {0[0]} minutos de cooldown".format(mins_hours_until(protection_cooldown)),
+            description="Debes esperar **{0[1]}** horas con **{0[0]}** minutos de cooldown".format(mins_hours_until(protection_cooldown)),
             color=0x6600a1)
         embed.set_image(
             url="https://vigarathtalks.files.wordpress.com/2014/07/tumblr_n388p3c4e11r2heyno2_500.gif"
@@ -114,7 +114,7 @@ async def defme(ctx):
         return
 
     protection = time() + 8*60*60 # protection for 8 hours
-    await ctx.send("Estás protegido por 8 horas a partir de ahora bebé")
+    await ctx.send("Estás protegido por **8** horas a partir de ahora bebé")
 
 @bot.command()
 async def div(ctx):
@@ -128,7 +128,7 @@ async def div(ctx):
 
     if div_cooldown > time():
         await ctx.send(
-            "Debes esperar {0[1]} horas con {0[0]} minutos de cooldown".format(
+            "Debes esperar **{0[1]}** horas con **{0[0]}** minutos de cooldown".format(
                 mins_hours_until(div_cooldown)
             )
         )
@@ -161,7 +161,7 @@ async def steal(ctx):
 
     if steal_cooldown > time():
         await ctx.send(
-            "Debes esperar {0[1]} horas con {0[0]} minutos de cooldown".format(
+            "Debes esperar **{0[1]}** horas con **{0[0]}** minutos de cooldown".format(
                 mins_hours_until(steal_cooldown)
             )
         )
@@ -195,7 +195,7 @@ async def esama(ctx):
 
     if esama_cooldown > time():
         await ctx.send(
-            "Debes esperar {0[1]} horas con {0[0]} minutos de cooldown".format(
+            "Debes esperar **{0[1]}** horas con **{0[0]}** minutos de cooldown".format(
                 mins_hours_until(esama_cooldown)
             )
         )
@@ -224,7 +224,7 @@ async def samus(ctx):
 
     if protection > time():
         await ctx.send(
-            "Quedan {0[1]} horas con {0[0]} minutos de protección :c".format(
+            "Quedan **{0[1]}** horas con **{0[0]}** minutos de protección :c".format(
                 mins_hours_until(protection)
             )
         )
