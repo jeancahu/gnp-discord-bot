@@ -44,11 +44,11 @@ def guild_only(func): # A decorator
 def only_for_user(user_id, user_name): # Functions who returns a decorator
     def out_decorator(func):
         @wraps(func)
-        async def f_wrapper(*args, **kwargs):
+        async def f_wrapper(ctx):
             if not ctx.author.id == user_id:
                 await ctx.send("Hey tú no eres {}!".format(user_name))
                 return
-            return await func(*args, **kwargs)
+            return await func(ctx)
         return f_wrapper
 
     return out_decorator
