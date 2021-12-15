@@ -29,6 +29,8 @@ def guild_only(func):
         if not ctx.guild.id == 699053837360824414: # Works for gnp server only
             return
         return await func(ctx)
+
+    f_wrapper.__name__ = func.__name__
     return f_wrapper
 
 try:
