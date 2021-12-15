@@ -25,11 +25,11 @@ def cooldown_message (cooldown):
     )
 
 def guild_only(func):
-    async def wrapper(ctx):
+    async def f_wrapper(ctx):
         if not ctx.guild.id == 699053837360824414: # Works for gnp server only
             return
-        await func(ctx)
-    return(wrapper)
+        return await func(ctx)
+    return f_wrapper
 
 try:
     TOKEN = open("TOKEN").readline().replace('\n','')
