@@ -109,6 +109,12 @@ async def on_message(message):
 
     await AntiScam.AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel)
 
+async def on_reaction_add(reaction, user):
+    if user.id == 863062654699438110: # Bot itself
+        return
+    #print(user.name)
+    pass
+
 @bot.command(name="homuri")
 async def name(ctx):
     await ctx.send("{} hello uwu".format(ctx.author.mention))
@@ -233,14 +239,14 @@ async def samus(ctx):
     global protection
 
     if protection > time():
-        sadgirl = discord.utils.get(ctx.guild.emojis, id=920528888042512454)
-        print(sadgirl)
-        await ctx.send(
+        sadpepe = discord.utils.get(ctx.guild.emojis, id=699096328055291995)
+        message = await ctx.send(
             "Quedan **{0[1]}** horas con **{0[0]}** minutos de protección {1}".format(
                 mins_hours_until(protection),
-                sadgirl
+                sadpepe
             )
         )
+        await message.add_reaction(sadpepe)
         return
 
     embed=discord.Embed(
@@ -271,4 +277,5 @@ async def samus(ctx):
 ## Run
 bot.add_listener(on_ready)
 bot.add_listener(on_message, "on_message")
+bot.add_listener(on_reaction_add, "on_reaction_add")
 bot.run(TOKEN)
