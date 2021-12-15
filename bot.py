@@ -8,6 +8,7 @@ from random import choice
 from AntiScam import AntiScam
 from math import modf as fract
 
+## Util functions
 def mins_hours_until (seconds):
     minutes, hours = fract((seconds - time())/(60*60))
     return (int(minutes*60), int(hours))
@@ -24,9 +25,25 @@ def cooldown_message (cooldown):
         minutes
     )
 
+## Users list
+samus = (654134051854352404, "Samus")
+
+
+## Decorators
+
 def guild_only(func):
     async def f_wrapper(ctx):
         if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+            return
+        return await func(ctx)
+
+    f_wrapper.__name__ = func.__name__
+    return f_wrapper
+
+def only_for_user(func, user_id, user_name):
+    async def f_wrapper(ctx):
+        if not ctx.author.id == user_id:
+            await ctx.send("Hey tú no eres {}!".format(user_name))
             return
         return await func(ctx)
 
@@ -56,6 +73,7 @@ fotos_samus = [
 ]
 
 
+## Global variables
 bot = commands.Bot(command_prefix="h>")
 log_channel = None
 bot.remove_command("help")
@@ -98,13 +116,10 @@ async def ping(ctx):
 
 @bot.command()
 @guild_only
+@only_for_user(user_id=samus[0], user_name=samus[1])
 async def defme(ctx):
     global protection
     global protection_cooldown
-
-    if not ctx.author.id == 654134051854352404:
-        await ctx.send("Hey tú no eres samus!")
-        return
 
     if protection_cooldown > time():
         embed=discord.Embed(
