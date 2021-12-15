@@ -234,7 +234,7 @@ async def samus(ctx):
 
     if protection > time():
         await ctx.send(
-            "Quedan **{0[1]}** horas con **{0[0]}** minutos de protección :c".format(
+            "Quedan **{0[1]}** horas con **{0[0]}** minutos de protección :SADGIRL:".format(
                 mins_hours_until(protection)
             )
         )
