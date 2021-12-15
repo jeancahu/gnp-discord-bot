@@ -7,6 +7,7 @@ from time import sleep, time
 from random import choice
 from AntiScam import AntiScam
 from math import modf as fract
+from functools import wraps
 
 ## Util functions
 def mins_hours_until (seconds):
@@ -31,24 +32,26 @@ samus = (654134051854352404, "Samus")
 
 ## Decorators
 
-def guild_only(func):
+def guild_only(func): # A decorator
+    @wraps(func)
     async def f_wrapper(ctx):
         if not ctx.guild.id == 699053837360824414: # Works for gnp server only
             return
         return await func(ctx)
 
-    f_wrapper.__name__ = func.__name__
     return f_wrapper
 
-def only_for_user(func, user_id, user_name):
-    async def f_wrapper(ctx):
-        if not ctx.author.id == user_id:
-            await ctx.send("Hey tú no eres {}!".format(user_name))
-            return
-        return await func(ctx)
+def only_for_user(user_id, user_name): # Functions who returns a decorator
+    def out_decorator(func):
+        @wraps(func)
+        async def f_wrapper(*args, **kwargs):
+            if not ctx.author.id == user_id:
+                await ctx.send("Hey tú no eres {}!".format(user_name))
+                return
+            return await func(*args, **kwargs)
+        return f_wrapper
 
-    f_wrapper.__name__ = func.__name__
-    return f_wrapper
+    return out_decorator
 
 try:
     TOKEN = open("TOKEN").readline().replace('\n','')
