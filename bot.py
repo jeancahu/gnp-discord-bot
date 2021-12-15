@@ -6,6 +6,11 @@ from sys import exit
 from time import sleep, time
 from random import choice
 from AntiScam import AntiScam
+from math import modf as fract
+
+def mins_hours_until (seconds):
+    minutes, hours = fract((seconds - time())/(60*60))
+    return (minutes*60, hours)
 
 try:
     TOKEN = open("TOKEN").readline().replace('\n','')
@@ -39,7 +44,7 @@ fotos_samus = [
 bot = commands.Bot(command_prefix="h>")
 log_channel = None
 bot.remove_command("help")
-protection = 0 #time() + 8*60*60 # Time until we can use command again
+protection = time() + 8*60*60 # Time until we can use command again
 protection_cooldown = 0
 
 div_cooldown = 0 # Time until we can use command again
@@ -99,7 +104,7 @@ async def defme(ctx):
     if protection_cooldown > time():
         embed=discord.Embed(
             title="Homura no tiene energía",
-            description="Debes esperar {:.2f} horas de cooldown".format((protection_cooldown-time())/(60*60)),
+            description="Debes esperar {0[1]} horas con {0[0]} minutos de cooldown".format(mins_hours_until(protection_cooldown)),
             color=0x6600a1)
         embed.set_image(
             url="https://vigarathtalks.files.wordpress.com/2014/07/tumblr_n388p3c4e11r2heyno2_500.gif"
@@ -116,15 +121,18 @@ async def div(ctx):
     global protection
     global div_cooldown
 
-    # if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-    #     return
+    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+        return
 
     # Cooldown
 
     if div_cooldown > time():
-        await ctx.send("Debes esperar {:.2f} minutos de cooldown".format((div_cooldown-time())/(60)))
+        await ctx.send(
+            "Debes esperar {0[1]} horas con {0[0]} minutos de cooldown".format(
+                mins_hours_until(div_cooldown)
+            )
+        )
         return
-
 
     protection = int(time() + ((protection - time())/2))
     div_cooldown = time() + 60*60
@@ -146,13 +154,17 @@ async def steal(ctx):
     global protection
     global steal_cooldown
 
-    # if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-    #     return
+    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+        return
 
     # Cooldown
 
     if steal_cooldown > time():
-        await ctx.send("Debes esperar {:.2f} minutos de cooldown".format((steal_cooldown-time())/(60)))
+        await ctx.send(
+            "Debes esperar {0[1]} horas con {0[0]} minutos de cooldown".format(
+                mins_hours_until(steal_cooldown)
+            )
+        )
         return
 
 
@@ -176,13 +188,17 @@ async def esama(ctx):
     global protection_cooldown
     global esama_cooldown
 
-    # if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-    #     return
+    if not ctx.guild.id == 699053837360824414: # Works for gnp server only
+        return
 
     # Cooldown
 
     if esama_cooldown > time():
-        await ctx.send("Debes esperar {:.2f} horas de cooldown".format((esama_cooldown-time())/(60*60)))
+        await ctx.send(
+            "Debes esperar {0[1]} horas con {0[0]} minutos de cooldown".format(
+                mins_hours_until(esama_cooldown)
+            )
+        )
         return
 
     protection_cooldown = int(time() + 60*60)
@@ -207,7 +223,11 @@ async def samus(ctx):
         return
 
     if protection > time():
-        await ctx.send("Quedan {:.2f} horas de protección :c".format((protection-time())/(60*60)))
+        await ctx.send(
+            "Quedan {0[1]} horas con {0[0]} minutos de protección :c".format(
+                mins_hours_until(protection)
+            )
+        )
         return
 
     embed=discord.Embed(
