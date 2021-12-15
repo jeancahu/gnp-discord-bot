@@ -12,6 +12,18 @@ def mins_hours_until (seconds):
     minutes, hours = fract((seconds - time())/(60*60))
     return (int(minutes*60), int(hours))
 
+def cooldown_message (cooldown):
+    minutes, hours = mins_hours_until(cooldown)
+    if hours:
+        return "Debes esperar **{}** horas con **{}** minutos de cooldown".format(
+            hours,
+            minutes
+        )
+
+    return "Debes esperar **{}** minutos de cooldown".format(
+        minutes
+    )
+
 try:
     TOKEN = open("TOKEN").readline().replace('\n','')
 except Exception as e:
@@ -104,7 +116,7 @@ async def defme(ctx):
     if protection_cooldown > time():
         embed=discord.Embed(
             title="Homura no tiene energía",
-            description="Debes esperar **{0[1]}** horas con **{0[0]}** minutos de cooldown".format(mins_hours_until(protection_cooldown)),
+            description=cooldown_message(protection_cooldown),
             color=0x6600a1)
         embed.set_image(
             url="https://vigarathtalks.files.wordpress.com/2014/07/tumblr_n388p3c4e11r2heyno2_500.gif"
@@ -128,9 +140,7 @@ async def div(ctx):
 
     if div_cooldown > time():
         await ctx.send(
-            "Debes esperar **{0[1]}** horas con **{0[0]}** minutos de cooldown".format(
-                mins_hours_until(div_cooldown)
-            )
+            cooldown_message(div_cooldown)
         )
         return
 
@@ -161,9 +171,7 @@ async def steal(ctx):
 
     if steal_cooldown > time():
         await ctx.send(
-            "Debes esperar **{0[1]}** horas con **{0[0]}** minutos de cooldown".format(
-                mins_hours_until(steal_cooldown)
-            )
+            cooldown_message(steal_cooldown)
         )
         return
 
@@ -195,9 +203,7 @@ async def esama(ctx):
 
     if esama_cooldown > time():
         await ctx.send(
-            "Debes esperar **{0[1]}** horas con **{0[0]}** minutos de cooldown".format(
-                mins_hours_until(esama_cooldown)
-            )
+            cooldown_message(esama_cooldown)
         )
         return
 
