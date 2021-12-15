@@ -234,8 +234,9 @@ async def samus(ctx):
 
     if protection > time():
         sadgirl = discord.utils.get(ctx.guild.emojis, id=920528888042512454)
+        print(sadgirl)
         await ctx.send(
-            "Quedan **{0[1]}** horas con **{0[0]}** minutos de protección {}".format(
+            "Quedan **{0[1]}** horas con **{0[0]}** minutos de protección {1}".format(
                 mins_hours_until(protection),
                 sadgirl
             )
