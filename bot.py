@@ -24,11 +24,11 @@ def cooldown_message (cooldown):
         minutes
     )
 
-async def guild_only(func):
-    def wrapper(ctx):
+def guild_only(func):
+    async def wrapper(ctx):
         if not ctx.guild.id == 699053837360824414: # Works for gnp server only
             return
-        func(ctx)
+        await func(ctx)
     return(wrapper)
 
 try:
