@@ -66,6 +66,8 @@ white_list = [
     649724009243738122, # Bayonetta
     650633031064879125, # Homura
     720994385382080552, # Matler
+    337640928384647178, # Carrera
+    572642286203306014, # Magista
 ]
 
 fotos_samus = [
