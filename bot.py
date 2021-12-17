@@ -88,10 +88,10 @@ async def on_reaction_add(reaction, user):
     pass
 
 # Command Homuri
-@bot.command(name="homuri")(name)
+bot.command(name="homuri")(name)
 
 # Command Ping
-@bot.command()(ping)
+bot.command()(ping)
 
 # Command Defme
 @bot.command()
