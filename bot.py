@@ -8,7 +8,7 @@ from random import choice
 from AntiScam import AntiScam
 from functools import wraps
 
-from commands import ping, name
+from commands import ping, name, div
 from utils import mins_hours_until, cooldown_message
 from constants import white_list, fotos_samus, bayo_images
 
