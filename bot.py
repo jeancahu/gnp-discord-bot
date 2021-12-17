@@ -50,6 +50,11 @@ div_cooldown = 0 # Time until we can use command again
 steal_cooldown = 0 # Time until we can use command again
 esama_cooldown = 0
 
+class MemberRoles(commands.MemberConverter):
+    async def convert(self, ctx, argument):
+        member = await super().convert(ctx, argument)
+        return [role.name for role in member.roles[1:]] # Remove everyone role!
+
 @bot.check
 async def globally_block_dms(ctx):
     # Block DMs
@@ -82,6 +87,14 @@ async def on_reaction_add(reaction, user):
         return
     #print(user.name)
     pass
+
+@bot.command()
+async def roles(ctx, *, member: MemberRoles):
+    """
+    Tells you a member's roles.
+    * means next arguments will be named args
+    """
+    await ctx.send('I see the following roles: ' + ', '.join(member))
 
 # Command Homuri
 bot.command(name="homuri")(name)
