@@ -8,7 +8,7 @@ from random import choice
 from AntiScam import AntiScam
 from functools import wraps
 
-from commands import ping, name, div
+from commands import ping, name
 from utils import mins_hours_until, cooldown_message
 from constants import white_list, fotos_samus, bayo_images
 
@@ -139,7 +139,32 @@ async def tg(ctx):
     embed.set_footer(text = "basically, he is sus af")
     message = await ctx.send(embed=embed)
 
-bot.command()(guild_only(699053837360824414)(div)) # Works for gnp server only
+@bot.command()
+@guild_only(699053837360824414) # Works for gnp server only
+async def div(ctx):
+    global protection
+    global div_cooldown
+
+    # Cooldown
+
+    if div_cooldown > time():
+        await ctx.send(
+            cooldown_message(div_cooldown)
+        )
+        return
+
+    protection = int(time() + ((protection - time())/2))
+    div_cooldown = time() + 60*60
+
+    embed=discord.Embed(
+        title="Divine dividing",
+        description='Samus pierde la mitad de su poder protector',
+        color=0x6600a1)
+    embed.set_image(
+        url='https://cdn.discordapp.com/attachments/861388324597399584/919971231351074907/latest.png'
+    )
+    embed.set_footer(text = "Love you {}".format("baby"))
+    message = await ctx.send(embed=embed)
 
 @bot.command()
 @guild_only(699053837360824414) # Works for gnp server only
