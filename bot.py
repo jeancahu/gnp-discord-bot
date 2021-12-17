@@ -124,6 +124,10 @@ async def bayo(ctx):
     await ctx.send(image)
 
 @bot.command()
+async def whoissus(ctx):
+    await ctx.send("<@330030494534336512>, he is sus af")
+
+@bot.command()
 @guild_only
 async def div(ctx):
     global protection
