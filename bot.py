@@ -49,7 +49,7 @@ if not TOKEN:
     exit(2)
 
 ## Global variables
-bot = commands.Bot(command_prefix="h>")
+bot = commands.Bot(command_prefix="h>", case_insensitive=True)
 log_channel = None
 bot.remove_command("help")
 protection = time() + 8*60*60 # Time until we can use command again
