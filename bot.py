@@ -16,6 +16,10 @@ samus = (654134051854352404, "Samus")
 bayo = (649724009243738122, "Nabonetta")
 
 ## Decorators
+def is_admin():
+    async def predicate(ctx):
+        return "ADMN" in [role.name for role in ctx.author.roles[1:]]
+    return commands.check(predicate)
 
 def guild_only(guild_id):
     async def predicate(ctx):
@@ -89,12 +93,63 @@ async def on_reaction_add(reaction, user):
     pass
 
 @bot.command()
-async def roles(ctx, *, member: MemberRoles):
+async def roles(ctx, *, member: MemberRoles = False):
     """
     Tells you a member's roles.
     * means next arguments will be named args
     """
-    await ctx.send('I see the following roles: ' + ', '.join(member))
+    if member:
+        await ctx.send('I see the following roles: **{}**'.format('**, **'.join(member)))
+        return
+    await ctx.send('I see the following roles: **{}**'.format('**, **'.join([str(i) for i in ctx.author.roles[1:]]))) # [1:] removes everyone role
+
+@bot.command()
+async def member(ctx, *, member: discord.Member):
+    """
+    Tells you a member's roles.
+    * means next arguments will be named args
+    """
+    await ctx.send('**{}**'.format(member))
+
+@bot.command()
+@is_admin()
+@guild_only(699053837360824414) # Works for gnp server only
+async def mute(ctx, *, member: discord.Member):
+    """
+    Tells you a member's roles.
+    * means next arguments will be named args
+    """
+    mute_role = ctx.guild.get_role(912781839633096734)
+    member_role = ctx.guild.get_role(912783144015528016)
+
+    await member.add_roles(mute_role)
+    await member.remove_roles(member_role)
+    await ctx.send('**{}** is muted'.format(member.name))
+
+@bot.command()
+@is_admin()
+@guild_only(699053837360824414) # Works for gnp server only
+async def unmute(ctx, *, member: discord.Member):
+    """
+    Tells you a member's roles.
+    * means next arguments will be named args
+    """
+    mute_role = ctx.guild.get_role(912781839633096734)
+    member_role = ctx.guild.get_role(912783144015528016)
+
+    await member.add_roles(member_role)
+    await member.remove_roles(mute_role)
+    await ctx.send('**{}** is unmuted'.format(member.name))
+
+
+@bot.command()
+async def avatar(ctx, *, member: discord.Member):
+    """
+    Tells you a member's roles.
+    * means next arguments will be named args
+    """
+    await ctx.send('{}'.format(member.avatar_url))
+
 
 # Command Homuri
 bot.command(name="homuri")(name)
