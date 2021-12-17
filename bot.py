@@ -132,6 +132,18 @@ async def sus(ctx):
     await ctx.send("<@330030494534336512>, he is sus af 🦃")
 
 @bot.command()
+async def tg(ctx):
+    embed=discord.Embed(
+        title="<@330030494534336512>",
+        description='New profile picture',
+        color=0x6600a1)
+    embed.set_image(
+        url='https://cdn.discordapp.com/attachments/720137361597399042/921302803182419978/FGxpPyoVgAQR4VE.png'
+    )
+    embed.set_footer(text = "he's sus af")
+    message = await ctx.send(embed=embed)
+
+@bot.command()
 @guild_only
 async def div(ctx):
     global protection
