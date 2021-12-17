@@ -6,7 +6,6 @@ from sys import exit
 from time import sleep, time
 from random import choice
 from AntiScam import AntiScam
-from functools import wraps
 
 from commands import ping, name
 from utils import mins_hours_until, cooldown_message
@@ -24,16 +23,12 @@ def guild_only(guild_id):
     return commands.check(predicate)
 
 def only_for_user(user_id, user_name): # Functions who returns a decorator
-    def out_decorator(func):
-        @wraps(func)
-        async def f_wrapper(ctx):
-            if not ctx.author.id == user_id:
-                await ctx.send("Hey tú no eres {}!".format(user_name))
-                return
-            return await func(ctx)
-        return f_wrapper
-
-    return out_decorator
+    async def predicate(ctx):
+        if not ctx.author.id == user_id:
+            await ctx.send("Hey tú no eres {}!".format(user_name))
+            return False
+        return True
+    return commands.check(predicate)
 
 try:
     TOKEN = open("TOKEN").readline().replace('\n','')
@@ -54,6 +49,11 @@ protection_cooldown = 0
 div_cooldown = 0 # Time until we can use command again
 steal_cooldown = 0 # Time until we can use command again
 esama_cooldown = 0
+
+@bot.check
+async def globally_block_dms(ctx):
+    # Block DMs
+    return ctx.guild is not None
 
 async def on_ready():
     print("Bot is online")
