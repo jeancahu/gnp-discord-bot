@@ -18,14 +18,10 @@ bayo = (649724009243738122, "Nabonetta")
 
 ## Decorators
 
-def guild_only(func): # A decorator
-    @wraps(func)
-    async def f_wrapper(ctx):
-        if not ctx.guild.id == 699053837360824414: # Works for gnp server only
-            return
-        return await func(ctx)
-
-    return f_wrapper
+def guild_only(guild_id):
+    async def predicate(ctx):
+        return ctx.guild and ctx.guild.id == guild_id
+    return commands.check(predicate)
 
 def only_for_user(user_id, user_name): # Functions who returns a decorator
     def out_decorator(func):
@@ -63,7 +59,7 @@ async def on_ready():
     print("Bot is online")
     log_channel = bot.get_channel(912781470668582962) # FIXME
 
-@guild_only
+@guild_only(699053837360824414) # Works for gnp server only
 async def on_message(message):
     if message.author.id == 863062654699438110: # Bot itself
         return
@@ -95,7 +91,7 @@ bot.command()(ping)
 
 # Command Defme
 @bot.command()
-@guild_only
+@guild_only(699053837360824414) # Works for gnp server only
 @only_for_user(user_id=samus[0], user_name=samus[1])
 async def defme(ctx):
     global protection
@@ -117,7 +113,7 @@ async def defme(ctx):
     await ctx.send("Estás protegido por **8** horas a partir de ahora bebé")
 
 @bot.command()
-@guild_only
+@guild_only(699053837360824414) # Works for gnp server only
 @only_for_user(user_id=bayo[0], user_name=bayo[1])
 async def bayo(ctx):
     image = choice(bayo_images)
@@ -144,7 +140,7 @@ async def tg(ctx):
     message = await ctx.send(embed=embed)
 
 @bot.command()
-@guild_only
+@guild_only(699053837360824414) # Works for gnp server only
 async def div(ctx):
     global protection
     global div_cooldown
@@ -173,7 +169,7 @@ async def div(ctx):
     # await message.delete()
 
 @bot.command()
-@guild_only
+@guild_only(699053837360824414) # Works for gnp server only
 async def steal(ctx):
     global protection
     global steal_cooldown
@@ -203,7 +199,7 @@ async def steal(ctx):
     # await message.delete()
 
 @bot.command()
-@guild_only
+@guild_only(699053837360824414) # Works for gnp server only
 async def esama(ctx):
     global protection_cooldown
     global esama_cooldown
@@ -232,7 +228,7 @@ async def esama(ctx):
     # await message.delete()
 
 @bot.command()
-@guild_only
+@guild_only(699053837360824414) # Works for gnp server only
 async def samus(ctx):
     global protection
 
