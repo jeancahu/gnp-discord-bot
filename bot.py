@@ -129,7 +129,7 @@ async def whoissus(ctx):
 
 @bot.command()
 async def sus(ctx):
-    await ctx.send("<@330030494534336512>, he is sus af")
+    await ctx.send("<@330030494534336512>, he is sus af 🦃")
 
 @bot.command()
 @guild_only
