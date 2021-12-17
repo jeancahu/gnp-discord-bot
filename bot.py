@@ -138,7 +138,7 @@ async def tg(ctx):
         description='New profile picture',
         color=0x6600a1)
     embed.set_image(
-        url='https://cdn.discordapp.com/attachments/720137361597399042/921302803182419978/FGxpPyoVgAQR4VE.png'
+        url='https://cdn.discordapp.com/attachments/861388324597399584/921457215452373052/masked.png'
     )
     embed.set_footer(text = "basically, he is sus af")
     message = await ctx.send(embed=embed)
