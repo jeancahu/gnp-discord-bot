@@ -94,7 +94,7 @@ async def on_reaction_add(reaction, user):
     pass
 
 @bot.command()
-async def roles(ctx, *, member: MemberRoles = False):
+async def roles(ctx, *, member: MemberRoles = None):
     """
     Tells you a member's roles.
     * means next arguments will be named args
@@ -149,7 +149,7 @@ async def avatar(ctx, *, member: Member = None):
     Tells you a member's roles.
     * means next arguments will be named args
     """
-    if not Member:
+    if member:
         await ctx.message.reply('{}'.format(member.avatar.url))
         return
 
