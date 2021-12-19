@@ -1,10 +1,11 @@
 # GNP Bot
 
-import discord
-from discord.ext import commands
+from discord import Embed, Member, Intents, utils # Bot TODO
+from discord.ext import commands # it's no needed for 1.7.3>
+
 from sys import exit
 from time import sleep, time
-from random import choice
+from random import choice, sample
 from AntiScam import AntiScam
 
 from commands import ping, name
@@ -16,11 +17,6 @@ samus = (654134051854352404, "Samus")
 bayo = (649724009243738122, "Nabonetta")
 
 ## Decorators
-def is_admin():
-    async def predicate(ctx):
-        return "ADMN" in [role.name for role in ctx.author.roles[1:]]
-    return commands.check(predicate)
-
 def guild_only(guild_id):
     async def predicate(ctx):
         return ctx.guild and ctx.guild.id == guild_id
@@ -45,8 +41,9 @@ if not TOKEN:
 
 ## Global variables
 bot = commands.Bot(command_prefix="h>", case_insensitive=True)
-log_channel = None
 bot.remove_command("help")
+
+log_channel = None
 protection = time() + 8*60*60 # Time until we can use command again
 protection_cooldown = 0
 
@@ -104,17 +101,17 @@ async def roles(ctx, *, member: MemberRoles = False):
     await ctx.send('I see the following roles: **{}**'.format('**, **'.join([str(i) for i in ctx.author.roles[1:]]))) # [1:] removes everyone role
 
 @bot.command()
-async def member(ctx, *, member: discord.Member):
+async def member(ctx, *, member: Member):
     """
-    Tells you a member's roles.
+    Tells you a member's name.
     * means next arguments will be named args
     """
     await ctx.send('**{}**'.format(member))
 
 @bot.command()
-@is_admin()
+@commands.has_role("ADMN")
 @guild_only(699053837360824414) # Works for gnp server only
-async def mute(ctx, *, member: discord.Member):
+async def mute(ctx, *, member: Member):
     """
     Tells you a member's roles.
     * means next arguments will be named args
@@ -127,9 +124,9 @@ async def mute(ctx, *, member: discord.Member):
     await ctx.send('**{}** is muted'.format(member.name))
 
 @bot.command()
-@is_admin()
+@commands.has_role("ADMN")
 @guild_only(699053837360824414) # Works for gnp server only
-async def unmute(ctx, *, member: discord.Member):
+async def unmute(ctx, *, member: Member):
     """
     Tells you a member's roles.
     * means next arguments will be named args
@@ -142,14 +139,54 @@ async def unmute(ctx, *, member: discord.Member):
     await ctx.send('**{}** is unmuted'.format(member.name))
 
 
-@bot.command()
-async def avatar(ctx, *, member: discord.Member):
+@bot.command(name="avatar")
+async def avatar(ctx, *, member: Member = None):
     """
     Tells you a member's roles.
     * means next arguments will be named args
     """
-    await ctx.send('{}'.format(member.avatar_url))
+    if not Member:
+        await ctx.message.reply('{}'.format(member.avatar.url))
+        return
 
+    await ctx.message.reply('{}'.format(ctx.author.avatar.url))
+
+@bot.command(name="emojis")
+async def emojis(ctx):
+    """
+    Guild emojis
+    """
+    await ctx.send(
+        '{}'.format(
+            '\n'.join(
+                ["{} :{}:".format(
+                    utils.get(ctx.guild.emojis, id=emoji.id),
+                    emoji.name)
+                 for emoji in
+                 sample(
+                     [i for i in ctx.guild.emojis if i.available],
+                     9
+                 )
+                 ]
+            )
+        )
+    )
+
+@bot.command(name="randreact")
+async def randreact(ctx):
+    """
+    React with random guild emojis
+    """
+
+    message = await ctx.channel.history(limit=2).flatten()
+    message = message[1]
+
+    task_list = [
+        message.add_reaction(emoji) for emoji in sample([i for i in ctx.guild.emojis if i.available], 9)
+    ]
+    responses = [await task for task in task_list]
+
+    await ctx.message.delete()
 
 # Command Homuri
 bot.command(name="homuri")(name)
@@ -166,7 +203,7 @@ async def defme(ctx):
     global protection_cooldown
 
     if protection_cooldown > time():
-        embed=discord.Embed(
+        embed=Embed(
             title="Homura no tiene energía",
             description=cooldown_message(protection_cooldown),
             color=0x6600a1)
@@ -197,7 +234,7 @@ async def sus(ctx):
 
 @bot.command()
 async def tg(ctx):
-    embed=discord.Embed(
+    embed=Embed(
         title="This is The Goat",
         description='New profile picture',
         color=0x6600a1)
@@ -224,7 +261,7 @@ async def div(ctx):
     protection = int(time() + ((protection - time())/2))
     div_cooldown = time() + 60*60
 
-    embed=discord.Embed(
+    embed=Embed(
         title="Divine dividing",
         description='Samus pierde la mitad de su poder protector',
         color=0x6600a1)
@@ -252,7 +289,7 @@ async def steal(ctx):
     protection = int(protection - 60*60)
     steal_cooldown = time() + 40*60
 
-    embed=discord.Embed(
+    embed=Embed(
         title="Steal",
         description='Una hora de protección es robada',
         color=0x6600a1)
@@ -281,7 +318,7 @@ async def esama(ctx):
     protection_cooldown = int(time() + 60*60)
     esama_cooldown = time() + 60*60*3
 
-    embed=discord.Embed(
+    embed=Embed(
         title="Esdeath-sama",
         description='El comando de protección queda congelado por una hora',
         color=0x6600a1)
@@ -299,7 +336,7 @@ async def samus(ctx):
     global protection
 
     if protection > time():
-        sadpepe = discord.utils.get(ctx.guild.emojis, id=699096328055291995)
+        sadpepe = utils.get(ctx.guild.emojis, id=699096328055291995)
         message = await ctx.send(
             "Quedan **{0[1]}** horas con **{0[0]}** minutos de protección {1}".format(
                 mins_hours_until(protection),
@@ -309,7 +346,7 @@ async def samus(ctx):
         await message.add_reaction(sadpepe)
         return
 
-    embed=discord.Embed(
+    embed=Embed(
         title="Cabrito",
         description='Cabrito wonito',
         color=0x6600a1)
