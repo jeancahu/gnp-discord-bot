@@ -8,6 +8,8 @@ from time import sleep, time
 from random import choice, sample
 from AntiScam import AntiScam
 
+from asyncio import gather
+
 from commands import ping, name
 from utils import mins_hours_until, cooldown_message
 from constants import white_list, fotos_samus, bayo_images
@@ -15,6 +17,8 @@ from constants import white_list, fotos_samus, bayo_images
 ## Users list
 samus = (654134051854352404, "Samus")
 bayo = (649724009243738122, "Nabonetta")
+
+guild_id = 699053837360824414 # GNP
 
 ## Decorators
 def guild_only(guild_id):
@@ -65,7 +69,7 @@ async def on_ready():
     print("Bot is online")
     log_channel = bot.get_channel(912781470668582962) # FIXME
 
-@guild_only(699053837360824414) # Works for gnp server only
+@guild_only(guild_id) # Works for gnp server only
 async def on_message(message):
     if message.author.id == 863062654699438110: # Bot itself
         return
@@ -108,9 +112,9 @@ async def member(ctx, *, member: Member):
     """
     await ctx.send('**{}**'.format(member))
 
-@bot.command()
+@bot.command(name="mute", aliases=["m"])
 @commands.has_role("ADMN")
-@guild_only(699053837360824414) # Works for gnp server only
+@guild_only(guild_id) # Works for gnp server only
 async def mute(ctx, *, member: Member):
     """
     Tells you a member's roles.
@@ -123,9 +127,9 @@ async def mute(ctx, *, member: Member):
     await member.remove_roles(member_role)
     await ctx.send('**{}** is muted'.format(member.name))
 
-@bot.command()
+@bot.command(name="unmute", aliases=["um"])
 @commands.has_role("ADMN")
-@guild_only(699053837360824414) # Works for gnp server only
+@guild_only(guild_id) # Works for gnp server only
 async def unmute(ctx, *, member: Member):
     """
     Tells you a member's roles.
@@ -139,7 +143,7 @@ async def unmute(ctx, *, member: Member):
     await ctx.send('**{}** is unmuted'.format(member.name))
 
 
-@bot.command(name="avatar")
+@bot.command(name="avatar", aliases=["pp", "pfp"])
 async def avatar(ctx, *, member: Member = None):
     """
     Tells you a member's roles.
@@ -151,7 +155,7 @@ async def avatar(ctx, *, member: Member = None):
 
     await ctx.message.reply('{}'.format(ctx.author.avatar.url))
 
-@bot.command(name="emojis")
+@bot.command(name="emojis", aliases=["emoji"])
 async def emojis(ctx):
     """
     Guild emojis
@@ -172,7 +176,7 @@ async def emojis(ctx):
         )
     )
 
-@bot.command(name="randreact")
+@bot.command(name="randreact", aliases=["rreact", "rr"])
 async def randreact(ctx):
     """
     React with random guild emojis
@@ -180,12 +184,12 @@ async def randreact(ctx):
 
     message = await ctx.channel.history(limit=2).flatten()
     message = message[1]
+    available_emojis = [i for i in ctx.guild.emojis if i.available]
+    random_emojis = sample(available_emojis, 9)
 
-    task_list = [
-        message.add_reaction(emoji) for emoji in sample([i for i in ctx.guild.emojis if i.available], 9)
-    ]
-    responses = [await task for task in task_list]
-
+    await gather(*[
+            message.add_reaction(emoji) for emoji in random_emojis
+        ])
     await ctx.message.delete()
 
 # Command Homuri
@@ -196,7 +200,7 @@ bot.command()(ping)
 
 # Command Defme
 @bot.command()
-@guild_only(699053837360824414) # Works for gnp server only
+@guild_only(guild_id) # Works for gnp server only
 @only_for_user(user_id=samus[0], user_name=samus[1])
 async def defme(ctx):
     global protection
@@ -218,7 +222,7 @@ async def defme(ctx):
     await ctx.send("Estás protegido por **8** horas a partir de ahora bebé")
 
 @bot.command()
-@guild_only(699053837360824414) # Works for gnp server only
+@guild_only(guild_id) # Works for gnp server only
 @only_for_user(user_id=bayo[0], user_name=bayo[1])
 async def bayo(ctx):
     image = choice(bayo_images)
@@ -244,9 +248,9 @@ async def tg(ctx):
     embed.set_footer(text = "basically, he is sus af")
     message = await ctx.send(embed=embed)
 
-@bot.command()
-@guild_only(699053837360824414) # Works for gnp server only
-async def div(ctx):
+@bot.command(name="divide", aliases=["div"])
+@guild_only(guild_id) # Works for gnp server only
+async def divide(ctx):
     global protection
     global div_cooldown
 
@@ -271,8 +275,8 @@ async def div(ctx):
     embed.set_footer(text = "Love you {}".format("baby"))
     message = await ctx.send(embed=embed)
 
-@bot.command()
-@guild_only(699053837360824414) # Works for gnp server only
+@bot.command(name='steal', aliases=["rob"])
+@guild_only(guild_id) # Works for gnp server only
 async def steal(ctx):
     global protection
     global steal_cooldown
@@ -284,7 +288,6 @@ async def steal(ctx):
             cooldown_message(steal_cooldown)
         )
         return
-
 
     protection = int(protection - 60*60)
     steal_cooldown = time() + 40*60
@@ -302,7 +305,7 @@ async def steal(ctx):
     # await message.delete()
 
 @bot.command()
-@guild_only(699053837360824414) # Works for gnp server only
+@guild_only(guild_id) # Works for gnp server only
 async def esama(ctx):
     global protection_cooldown
     global esama_cooldown
@@ -331,7 +334,7 @@ async def esama(ctx):
     # await message.delete()
 
 @bot.command()
-@guild_only(699053837360824414) # Works for gnp server only
+@guild_only(guild_id) # Works for gnp server only
 async def samus(ctx):
     global protection
 
