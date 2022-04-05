@@ -1,3 +1,6 @@
 [submodule "AntiScam"]
 	path = AntiScam
 	url = git@github.com:jeancahu/AntiScam.git
+[submodule "pycord"]
+	path = pycord
+	url = https://github.com/Pycord-Development/pycord

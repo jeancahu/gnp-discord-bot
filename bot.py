@@ -48,7 +48,7 @@ bot = commands.Bot(command_prefix="h>", case_insensitive=True)
 bot.remove_command("help")
 
 log_channel = None
-protection = time() + 8*60*60 # Time until we can use command again
+protection = time() # + 8*60*60 # Time until we can use command again
 protection_cooldown = 0
 
 div_cooldown = 0 # Time until we can use command again
@@ -77,12 +77,19 @@ async def on_message(message):
     ## General logic
     log_channel = bot.get_channel(912781470668582962) # Log channel
 
+    # if message.author.id == 650633031064879125: # Homura
+    #     print(message.content)
+    #     return
+
     if message.author.id == white_list[0]: # Bayonetta
         await log_channel.send("Bayonetta: {}".format(message.content))
         return
 
     if message.author.id == 654134051854352404: # Samus
         await log_channel.send("Samus: {}".format(message.content))
+        await message.add_reaction(
+            utils.get(message.guild.emojis, id=933542887222812703)
+        )
         return
 
     await AntiScam.AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel)
@@ -350,8 +357,8 @@ async def samus(ctx):
         return
 
     embed=Embed(
-        title="Cabrito",
-        description='Cabrito wonito',
+        title="José",
+        description='Puertorican papi',
         color=0x6600a1)
     embed.set_image(
         url=fotos_samus[0]
