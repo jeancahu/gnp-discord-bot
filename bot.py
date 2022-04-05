@@ -81,6 +81,11 @@ async def on_message(message):
         print(message.content)
         return
 
+
+    if message.author.id == 432610292342587392: # Mudae Bot
+        print("Mudae BOT: {}".format(message.content))
+        return
+
     # if message.author.id == white_list[0]: # Bayonetta
     #     await log_channel.send("Bayonetta: {}".format(message.content))
     #     return
