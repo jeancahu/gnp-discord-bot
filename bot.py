@@ -84,9 +84,8 @@ async def on_message(message):
             print("There are {} embeds.".format(len(embeds)))
 
             if len(embeds) == 1: # An embed only
-                print("Embed on message -> Title: {}\nDescription: {}".format(embeds[0].title, embeds[0].description))
+                print("Embed on message -> Title: {}\nDescription: {}".format(embeds[0].title.text, embeds[0].description))
             else: ## Ignore embeds without title TODO
-                print("content len: {}".format(len(message.content)))
                 ## Special processing for $tu output
                 if "**=>** $tuarrange" in message.content:
                     ## split by newline
