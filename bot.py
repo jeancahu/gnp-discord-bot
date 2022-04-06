@@ -47,7 +47,10 @@ if not TOKEN:
     exit(2)
 
 ## Global variables
-bot = commands.Bot(command_prefix="h>", case_insensitive=True)
+intents = Intents.default()
+intents.members = True
+
+bot = commands.Bot(command_prefix="h>", intents=intents, case_insensitive=True)
 bot.remove_command("help")
 
 log_channel = None
