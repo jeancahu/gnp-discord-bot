@@ -16,7 +16,6 @@ from utils import mins_hours_until, cooldown_message
 from constants import white_list, fotos_samus, bayo_images
 
 import re
-import inspect
 
 ## Users list
 samus = (654134051854352404, "Samus")
@@ -85,11 +84,8 @@ async def on_message(message):
             print("There are {} embeds.".format(len(embeds)))
 
             if len(embeds) == 1: # An embed only
-                #print("Embed on message -> Title: {}\nDescription: {}".format(getattr(embeds[0], "title"), embeds[0].description))
-                # await message.channel.send(embed=embeds[0])
-
-                for class_member in inspect.getmembers(embeds[0]):
-                    print("Class_member: {}".format(class_member))
+                with name in getattr(embeds[0], "author"):
+                    print("Embed on message -> Title: {}\nDescription: {}".format(name, embeds[0].description))
 
             else: ## Ignore embeds without title TODO
                 ## Special processing for $tu output
