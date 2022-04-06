@@ -86,9 +86,9 @@ async def on_message(message):
 
             if len(embeds) == 1: # An embed only
                 #print("Embed on message -> Title: {}\nDescription: {}".format(getattr(embeds[0], "title"), embeds[0].description))
-                await message.channel.send(embed=embeds[0])
+                # await message.channel.send(embed=embeds[0])
 
-                for class_members in inspect.getmembers(embeds[0]):
+                for class_member in inspect.getmembers(embeds[0]):
                     print("Class_member: {}".format(class_member))
 
             else: ## Ignore embeds without title TODO
