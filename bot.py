@@ -79,9 +79,9 @@ async def on_message(message):
         try:
             embeds = getattr(message, "embeds")
 
-            if len(embeds) == 1:
+            if len(embeds) == 1 and embeds[0].title != Embed.empty:
                 print("Embed on message -> Title: {}".format(embeds[0].title))
-            else:
+            elif message.content: ## Ignore embeds without title
                 print("Mudae BOT: {}".format(message.content))
 
         except Exception as e: # There is not Embed
