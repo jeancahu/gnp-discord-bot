@@ -66,7 +66,7 @@ async def globally_block_dms(ctx):
     return ctx.guild is not None
 
 async def on_ready():
-    print("Bot is online")
+    print("Bot is online, discord version: {}".format(discord.__version__))
     log_channel = bot.get_channel(912781470668582962) # FIXME
 
 @guild_only(guild_id) # Works for gnp server only
@@ -74,36 +74,19 @@ async def on_message(message):
     if message.author.id == 863062654699438110: # Bot itself
         return
 
-    ## General logic
-    #log_channel = bot.get_channel(912781470668582962) # Log channel
-
-    if message.author.id == 650633031064879125: # Homura
-        print(message.content)
-        return
-
-
     if message.author.id == 432610292342587392: # Mudae Bot
-        print("Mudae BOT: {}".format(message.content))
+        if getattr(message, "Embed"):
+            print("Embed on message -> Title: {}".format(message.Embed.title))
+        else:
+            print("Mudae BOT: {}".format(message.content))
         return
 
-    # if message.author.id == white_list[0]: # Bayonetta
-    #     await log_channel.send("Bayonetta: {}".format(message.content))
-    #     return
-
-    # if message.author.id == 654134051854352404: # Samus
-    #     await log_channel.send("Samus: {}".format(message.content))
-    #     await message.add_reaction(
-    #         utils.get(message.guild.emojis, id=933542887222812703)
-    #     )
-    #     return
-
-    # await AntiScam.AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=log_channel)
+    ## AntiScam
+    await AntiScam.AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=None)
 
 async def on_reaction_add(reaction, user):
     if user.id == 863062654699438110: # Bot itself
         return
-    #print(user.name)
-    pass
 
 @bot.command()
 async def roles(ctx, *, member: MemberRoles = None):
