@@ -88,7 +88,7 @@ async def on_message(message):
                 for field in embeds[0].fields:
                     print("Field: {}".format(field.name))
 
-                    message.channel.send(embed=embeds[0])
+                    await message.channel.send(embed=embeds[0])
 
             else: ## Ignore embeds without title TODO
                 ## Special processing for $tu output
