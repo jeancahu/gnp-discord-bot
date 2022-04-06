@@ -81,10 +81,10 @@ async def on_message(message):
         try:
             embeds = getattr(message, "embeds")
 
-            if len(embeds) == 1 and embeds[0].title != Embed.empty:
+            if len(embeds) and not embeds[0].title == Embed.empty:
                 print("Embed on message -> Title: {}".format(embeds[0].title))
-            elif len(message.content): ## Ignore embeds without title TODO
-
+            else: ## Ignore embeds without title TODO
+                print("content len: {}".format(len(message.content)))
                 ## Special processing for $tu output
                 if "**=>** $tuarrange" in message.content:
                     ## split by newline
@@ -92,7 +92,7 @@ async def on_message(message):
                     for line in tu_lines:
                         print("$tu command output: {}".format(line))
 
-                    print("User name: {}".format( re.search('^\*\*[^*]{*}\*\*', tu_lines[0]).group(0) ))
+                    # print("User name: {}".format( re.search('^\*\*[^*]{*}\*\*', tu_lines[0]).group(0) )) # TODO
                 else:
                     print("Mudae BOT: {}".format(message.content))
 
