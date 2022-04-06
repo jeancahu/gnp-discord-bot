@@ -155,7 +155,7 @@ async def muted_members(ctx):
     member_role = ctx.guild.get_role(912783144015528016)
 
     for member in ctx.guild.members:
-        print('I see the following roles: **{}** for __{}__'.format('**, **'.join([str(i) for i in member.roles])), member.name)
+        print('I see the following roles: **{}** for __{}__'.format('**, **'.join([str(i) for i in member.roles]), member.name))
 
 @bot.command(name="unmute", aliases=["um"])
 @commands.has_role("ADMN")
