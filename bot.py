@@ -166,7 +166,18 @@ async def muted_members(ctx):
     member_role = ctx.guild.get_role(912783144015528016)
 
     ctx.message.add_reaction("👍")
-    print('\n'.join(['Roles: {COLOR_RED}{}{COLOR_END} for Member: {COLOR_YELLOW}{}{COLOR_END}'.format(', '.join([str(i) for i in member.roles]), member.name) for member in ctx.guild.members]))
+    print(
+        '\n'.join(
+            ['Roles: {roles_color}{roles}{nocolor} for Member: {member_color}{member}{nocolor}'.format(
+                roles = ', '.join([str(i) for i in member.roles]),
+                member = member.name,
+                roles_color = COLOR_YELLOW,
+                member_color = COLOR_RED,
+                nocolor = COLOR_END
+             )
+             for member in ctx.guild.members]
+        )
+    )
 
 @bot.command(name="unmute", aliases=["um"])
 @commands.has_role("ADMN")
