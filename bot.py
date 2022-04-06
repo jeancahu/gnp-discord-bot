@@ -82,8 +82,8 @@ async def on_message(message):
             print("Mudae BOT: {}".format(message.content))
         return
 
-    ## AntiScam
-    await AntiScam.AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=None)
+    ## AntiScam # TODO fix false positive
+    ## await AntiScam.AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=None)
 
 async def on_reaction_add(reaction, user):
     if user.id == 863062654699438110: # Bot itself
