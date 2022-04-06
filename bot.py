@@ -16,6 +16,7 @@ from utils import mins_hours_until, cooldown_message
 from constants import white_list, fotos_samus, bayo_images
 
 import re
+from os import system
 
 ## Users list
 samus = (654134051854352404, "Samus")
@@ -69,8 +70,9 @@ async def globally_block_dms(ctx):
     return ctx.guild is not None
 
 async def on_ready():
+    system("clear")
     print("Bot is online, discord version: {}".format(discord_version))
-    log_channel = bot.get_channel(912781470668582962) # FIXME
+    # log_channel = bot.get_channel(912781470668582962) # FIXME
 
 @guild_only(guild_id) # Works for gnp server only
 async def on_message(message):
