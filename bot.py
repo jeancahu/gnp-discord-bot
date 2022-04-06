@@ -84,7 +84,7 @@ async def on_message(message):
             print("There are {} embeds.".format(len(embeds)))
 
             if len(embeds) == 1: # An embed only:
-                print("Embed on message -> Title: {}\nDescription: {}".format(embeds[0].author.name, embeds[0].description))
+                print("Embed on message -> Title: {}\nDescription: {}".format(embeds[0].author.name, embeds[0].description.split('\n')[0]))
 
             else: ## Ignore embeds without title TODO
                 ## Special processing for $tu output
@@ -143,10 +143,10 @@ async def mute(ctx, *, member: Member):
     await member.remove_roles(member_role)
     await ctx.send('**{}** is muted'.format(member.name))
 
-@bot.command(name="mute_members", aliases=["mm"])
+@bot.command(name="muted_members", aliases=["mm"])
 @commands.has_role("ADMN")
 @guild_only(guild_id) # Works for gnp server only
-async def mute_members(ctx):
+async def muted_members(ctx):
     """
     Tells you a member's roles.
     * means next arguments will be named args
@@ -154,7 +154,8 @@ async def mute_members(ctx):
     mute_role = ctx.guild.get_role(912781839633096734)
     member_role = ctx.guild.get_role(912783144015528016)
 
-    print("TODO FIXME member list muted roled")
+    for member in ctx.guild.members:
+        print('I see the following roles: **{}** for __{}__'.format('**, **'.join([str(i) for i in member.roles[1:]])), member.name) # [1:] removes everyone role
 
 @bot.command(name="unmute", aliases=["um"])
 @commands.has_role("ADMN")
