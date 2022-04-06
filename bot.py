@@ -81,8 +81,15 @@ async def on_message(message):
 
             if len(embeds) == 1 and embeds[0].title != Embed.empty:
                 print("Embed on message -> Title: {}".format(embeds[0].title))
-            elif message.content: ## Ignore embeds without title
-                print("Mudae BOT: {}".format(message.content))
+            elif len(message.content): ## Ignore embeds without title TODO
+
+                ## Special processing for $tu output
+                if "**=>** $tuarrange" in message.content:
+                    ## split by newline
+                    for line in message.content.split('\n'):
+                        print("$tu command output: {}".format(line))
+                else:
+                    print("Mudae BOT: {}".format(message.content))
 
         except Exception as e: # There is not Embed
             print("Mudae BOT: {}".format(message.content))
