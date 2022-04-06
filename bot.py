@@ -47,6 +47,14 @@ if not TOKEN:
     exit(2)
 
 ## Global variables
+
+COLOR_RED="\033[0;31m"
+COLOR_GREEN="\033[0;32m"
+COLOR_BLUE="\033[0;34m"
+COLOR_PURPLE="\033[0;35m"
+COLOR_YELLOW="\033[1;33m"
+COLOR_END="\033[0m"
+
 intents = Intents.default()
 intents.members = True
 
@@ -157,7 +165,8 @@ async def muted_members(ctx):
     mute_role = ctx.guild.get_role(912781839633096734)
     member_role = ctx.guild.get_role(912783144015528016)
 
-    print('\n'.join(['Roles: **{}** for Member: __{}__'.format('**, **'.join([str(i) for i in member.roles]), member.name) for member in ctx.guild.members]))
+    ctx.message.add_reaction("👍")
+    print('\n'.join(['Roles: {COLOR_RED}{}{COLOR_END} for Member: {COLOR_YELLOW}{}{COLOR_END}'.format(', '.join([str(i) for i in member.roles]), member.name) for member in ctx.guild.members]))
 
 @bot.command(name="unmute", aliases=["um"])
 @commands.has_role("ADMN")
