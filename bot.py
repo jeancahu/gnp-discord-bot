@@ -15,6 +15,8 @@ from commands import ping, name
 from utils import mins_hours_until, cooldown_message
 from constants import white_list, fotos_samus, bayo_images
 
+import re
+
 ## Users list
 samus = (654134051854352404, "Samus")
 bayo = (649724009243738122, "Nabonetta")
@@ -86,8 +88,11 @@ async def on_message(message):
                 ## Special processing for $tu output
                 if "**=>** $tuarrange" in message.content:
                     ## split by newline
-                    for line in message.content.split('\n'):
+                    tu_lines = message.content.split('\n')
+                    for line in tu_lines:
                         print("$tu command output: {}".format(line))
+
+                    print("User name: {}".format( re.search('^\*\*[^*]{*}\*\*', tu_lines[0]).group(0) ))
                 else:
                     print("Mudae BOT: {}".format(message.content))
 
@@ -135,6 +140,19 @@ async def mute(ctx, *, member: Member):
     await member.add_roles(mute_role)
     await member.remove_roles(member_role)
     await ctx.send('**{}** is muted'.format(member.name))
+
+@bot.command(name="mute_members", aliases=["mm"])
+@commands.has_role("ADMN")
+@guild_only(guild_id) # Works for gnp server only
+async def mute_members(ctx):
+    """
+    Tells you a member's roles.
+    * means next arguments will be named args
+    """
+    mute_role = ctx.guild.get_role(912781839633096734)
+    member_role = ctx.guild.get_role(912783144015528016)
+
+    print("TODO FIXME member list muted roled")
 
 @bot.command(name="unmute", aliases=["um"])
 @commands.has_role("ADMN")
