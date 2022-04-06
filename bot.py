@@ -84,7 +84,7 @@ async def on_message(message):
             print("There are {} embeds.".format(len(embeds)))
 
             if len(embeds) == 1: # An embed only
-                with name in getattr(embeds[0], "author"):
+                with name in embeds[0].author:
                     print("Embed on message -> Title: {}\nDescription: {}".format(name, embeds[0].description))
 
             else: ## Ignore embeds without title TODO
