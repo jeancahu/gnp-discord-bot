@@ -83,7 +83,7 @@ async def on_message(message):
 
             print("There are embeds: {}".format(len(embeds)))
 
-            if len(embeds) and not embeds[0].title == Embed.empty:
+            if len(embeds):
                 print("Embed on message -> Title: {}".format(embeds[0].title))
             else: ## Ignore embeds without title TODO
                 print("content len: {}".format(len(message.content)))
@@ -99,7 +99,7 @@ async def on_message(message):
                     print("Mudae BOT: {}".format(message.content))
 
         except Exception as e: # There is not Embed
-            print("Mudae BOT: {}".format(message.content))
+            print("Mudae BOT (except {}): {}".format(e, message.content))
         return
 
     ## AntiScam # TODO fix false positive
