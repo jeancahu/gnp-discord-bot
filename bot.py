@@ -165,7 +165,7 @@ async def muted_members(ctx):
     mute_role = ctx.guild.get_role(912781839633096734)
     member_role = ctx.guild.get_role(912783144015528016)
 
-    ctx.message.add_reaction("👍")
+    await ctx.message.add_reaction("👍")
     print(
         '\n'.join(
             ['Roles: {roles_color}{roles}{nocolor} for Member: {member_color}{member}{nocolor}'.format(
