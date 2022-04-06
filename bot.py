@@ -1,6 +1,7 @@
 # GNP Bot
 
 from discord import Embed, Member, Intents, utils # Bot TODO
+from discord import __version__ as discord_version
 from discord.ext import commands # it's no needed for 1.7.3>
 
 from sys import exit
@@ -66,7 +67,7 @@ async def globally_block_dms(ctx):
     return ctx.guild is not None
 
 async def on_ready():
-    print("Bot is online, discord version: {}".format(discord.__version__))
+    print("Bot is online, discord version: {}".format(discord_version))
     log_channel = bot.get_channel(912781470668582962) # FIXME
 
 @guild_only(guild_id) # Works for gnp server only
