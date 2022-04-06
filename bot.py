@@ -81,10 +81,10 @@ async def on_message(message):
         try:
             embeds = getattr(message, "embeds")
 
-            print("There are embeds: {}".format(len(embeds)))
+            print("There are {} embeds.".format(len(embeds)))
 
-            if len(embeds):
-                print("Embed on message -> Title: {}".format(embeds[0].title))
+            if len(embeds) == 1: # An embed only
+                print("Embed on message -> Title: {}\nDescription: {}".format(embeds[0].title, embeds[0].description))
             else: ## Ignore embeds without title TODO
                 print("content len: {}".format(len(message.content)))
                 ## Special processing for $tu output
