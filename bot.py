@@ -76,9 +76,15 @@ async def on_message(message):
         return
 
     if message.author.id == 432610292342587392: # Mudae Bot
-        if getattr(message, "Embed"):
-            print("Embed on message -> Title: {}".format(message.Embed.title))
-        else:
+        try:
+            embeds = getattr(message, "embeds")
+
+            if len(embeds) == 1:
+                print("Embed on message -> Title: {}".format(embeds[0].title))
+            else:
+                print("Mudae BOT: {}".format(message.content))
+
+        except Exception as e: # There is not Embed
             print("Mudae BOT: {}".format(message.content))
         return
 
