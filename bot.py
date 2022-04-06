@@ -84,10 +84,11 @@ async def on_message(message):
             print("There are {} embeds.".format(len(embeds)))
 
             if len(embeds) == 1: # An embed only
-                print("Embed on message -> Title: {}\nDescription: {}".format(getattr(embeds[0], "title"), embeds[0].description))
-
+                #print("Embed on message -> Title: {}\nDescription: {}".format(getattr(embeds[0], "title"), embeds[0].description))
                 for field in embeds[0].fields:
-                    print("Field: {}".format(field))
+                    print("Field: {}".format(field.name))
+
+                    message.channel.send(embed=embeds[0])
 
             else: ## Ignore embeds without title TODO
                 ## Special processing for $tu output
