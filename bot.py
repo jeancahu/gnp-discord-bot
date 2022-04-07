@@ -2,7 +2,9 @@
 
 from discord import Embed, Member, Intents, utils # Bot TODO
 from discord import __version__ as discord_version
-from discord.ext import commands # it's no needed for 1.7.3> # TODO
+from discord.ext import commands # it's no needed for 1.7.3> # TODO (Change on 1.7.3 release)
+
+import paho.mqtt.client as mqtt
 
 from sys import exit
 from time import sleep, time
@@ -54,6 +56,14 @@ COLOR_PURPLE="\033[0;35m"
 COLOR_YELLOW="\033[1;33m"
 COLOR_END="\033[0m"
 
+## MQTT Client initialization
+broker_address = "localhost"
+broker_topic = "discord/mudae"
+
+client = mqtt.Client("P1")
+client.connect(broker_address)
+
+## Discord bot initialization
 intents = Intents.default()
 intents.members = True
 
@@ -86,10 +96,11 @@ async def on_message(message):
             embeds = getattr(message, "embeds")
 
             if len(embeds) == 1: # An embed only:
-                print("Embed on message -> Title (author): {}\nTitle: {}\nDescription: {}".format(
+                mqtt_message = "Embed on message -> Title (author): {}\nTitle: {}\nDescription: {}".format(
                     embeds[0].author.name,
                     embeds[0].title,
-                    embeds[0].description.split('\n')[0]))
+                    embeds[0].description.split('\n')[0])
+                client.publish(broker_topic, mqtt_message) # Publish
 
             else: ## Ignore embeds without title TODO
                 ## Special processing for $tu output
