@@ -60,8 +60,8 @@ COLOR_END="\033[0m"
 broker_address = "localhost"
 broker_topic = "discord/mudae"
 
-client = mqtt.Client("P1")
-client.connect(broker_address)
+mqtt_client = mqtt.Client("P1")
+mqtt_client.connect(broker_address)
 
 ## Discord bot initialization
 intents = Intents.default()
@@ -88,6 +88,7 @@ async def on_ready():
 
 @guild_only(guild_id) # Works for gnp server only
 async def on_message(message):
+    mqtt_client.publish(log, "New message") # Publish
     if message.author.id == 863062654699438110: # Bot itself
         return
 
@@ -100,7 +101,7 @@ async def on_message(message):
                     embeds[0].author.name,
                     embeds[0].title,
                     embeds[0].description.split('\n')[0])
-                client.publish(broker_topic, mqtt_message) # Publish
+                mqtt_client.publish(broker_topic, mqtt_message) # Publish
 
             else: ## Ignore embeds without title TODO
                 ## Special processing for $tu output
