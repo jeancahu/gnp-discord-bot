@@ -88,7 +88,7 @@ async def on_ready():
 
 @guild_only(guild_id) # Works for gnp server only
 async def on_message(message):
-    mqtt_client.publish(log, "New message") # Publish
+    mqtt_client.publish("log", "New message") # Publish
     if message.author.id == 863062654699438110: # Bot itself
         return
 
