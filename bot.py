@@ -58,7 +58,7 @@ COLOR_END="\033[0m"
 
 ## MQTT Client initialization
 broker_address = "localhost"
-broker_topic = "discord/mudae"
+broker_topic = "discord"
 
 mqtt_client = mqtt.Client("P1")
 mqtt_client.connect(broker_address)
@@ -88,7 +88,6 @@ async def on_ready():
 
 @guild_only(guild_id) # Works for gnp server only
 async def on_message(message):
-    mqtt_client.publish("log", "New message") # Publish
     if message.author.id == 863062654699438110: # Bot itself
         return
 
@@ -101,16 +100,16 @@ async def on_message(message):
                     embeds[0].author.name,
                     embeds[0].title,
                     embeds[0].description.split('\n')[0])
+
+                print(mqtt_message)
                 mqtt_client.publish(broker_topic, mqtt_message) # Publish
 
             else: ## Ignore embeds without title TODO
                 ## Special processing for $tu output
                 if "**=>** $tuarrange" in message.content:
-                    ## split by newline
-                    tu_lines = message.content.split('\n')
-                    for line in tu_lines:
-                        print("$tu command output: {}".format(line))
-
+                    mqtt_message = "\n".join(["$tu command output: {}".format(line) for line in message.content.split('\n')])
+                    print(mqtt_message)
+                    mqtt_client.publish(broker_topic, mqtt_message) # Publish
                 else:
                     print("Mudae BOT: {}".format(message.content))
 
