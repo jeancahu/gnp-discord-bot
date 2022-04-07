@@ -2,7 +2,7 @@
 
 from discord import Embed, Member, Intents, utils # Bot TODO
 from discord import __version__ as discord_version
-from discord.ext import commands # it's no needed for 1.7.3>
+from discord.ext import commands # it's no needed for 1.7.3> # TODO
 
 from sys import exit
 from time import sleep, time
@@ -12,7 +12,6 @@ from AntiScam import AntiScam
 from asyncio import gather
 
 from commands import ping, name
-from utils import mins_hours_until, cooldown_message
 from constants import white_list, fotos_samus, bayo_images
 
 import re
@@ -62,12 +61,6 @@ bot = commands.Bot(command_prefix="h>", intents=intents, case_insensitive=True)
 bot.remove_command("help")
 
 log_channel = None
-protection = time() # + 8*60*60 # Time until we can use command again
-protection_cooldown = 0
-
-div_cooldown = 0 # Time until we can use command again
-steal_cooldown = 0 # Time until we can use command again
-esama_cooldown = 0
 
 class MemberRoles(commands.MemberConverter):
     async def convert(self, ctx, argument):
@@ -92,10 +85,11 @@ async def on_message(message):
         try:
             embeds = getattr(message, "embeds")
 
-            print("There are {} embeds.".format(len(embeds)))
-
             if len(embeds) == 1: # An embed only:
-                print("Embed on message -> Title: {}\nDescription: {}".format(embeds[0].author.name, embeds[0].description.split('\n')[0]))
+                print("Embed on message -> Title (author): {}\nTitle: {}\nDescription: {}".format(
+                    embeds[0].author.name,
+                    embeds[0].title,
+                    embeds[0].description.split('\n')[0]))
 
             else: ## Ignore embeds without title TODO
                 ## Special processing for $tu output
@@ -105,7 +99,6 @@ async def on_message(message):
                     for line in tu_lines:
                         print("$tu command output: {}".format(line))
 
-                    # print("User name: {}".format( re.search('^\*\*[^*]{*}\*\*', tu_lines[0]).group(0) )) # TODO
                 else:
                     print("Mudae BOT: {}".format(message.content))
 
