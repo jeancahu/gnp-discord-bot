@@ -18,7 +18,8 @@ from constants import white_list, fotos_samus, bayo_images
 
 import re
 
-from mudae import MudaeTuRecord
+from inspect import getmembers
+from mudae import MudaeTuRecord, MudaeClaimEmbed
 
 ## Users list
 samus = (654134051854352404, "Samus")
@@ -101,6 +102,28 @@ async def on_message(message):
     if message.author.id == 863062654699438110: # Bot itself
         return
 
+    try:
+        # Init a mudae $tu record object
+        mudae_tu_record_temp = MudaeTuRecord(message)
+        mudae_tu_record_temp.print()
+        mudae_tu_record_temp.save()
+
+        #await message.reply(str(mudae_tu_record_temp))
+        return
+    except ValueError as e:
+        pass
+    except TypeError as e:
+        pass
+
+    try:
+        # Init a mudaeClimEmbed record object
+        mudae_claim_embed_temp = MudaeClaimEmbed(message)
+        # return
+    except ValueError as e:
+        pass
+    except TypeError as e:
+        pass
+
     if message.author.id == 432610292342587392: # Mudae Bot
         ## Special processing for $tu output
         try:
@@ -112,20 +135,9 @@ async def on_message(message):
                         embeds[0].title,
                         embeds[0].description.split('\n')[0])
                     mqtt_client.publish(broker_topic, mqtt_message) # Publish
-
-            else: ## Ignore embeds without title TODO
-                if "**=>** $tuarrange" in message.content:
-
-                    # Init a mudae $tu record object
-                    mudae_tu_record_temp = MudaeTuRecord(message.content) # TODO
-                    await message.reply(str(mudae_tu_record_temp))
-                    if mqtt_enable:
-                        mqtt_message = "\n".join(["$tu command output: {}".format(line) for line in message.content.split('\n')])
-                        mqtt_client.publish(broker_topic, mqtt_message) # Publish
-
-                    return
-                else:
-                    print("Mudae BOT: {}".format(message.content))
+            else:
+                pass
+                ##print(getmembers(message)) ## FIXME remove
 
         except Exception as e: # There is not Embed
             print("Mudae BOT (except {}): {}".format(e, message.content))

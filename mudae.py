@@ -2,7 +2,20 @@ import re
 
 class MudaeTuRecord ():
     def __init__(self, tu_message):
-        l_tu = tu_message.split("\n")
+
+        ## Verify message is valid:
+        embeds = getattr(tu_message, "embeds")
+        if len(embeds) >= 1: # An embed only:
+            raise TypeError('Message contains embeds')
+
+        if not tu_message.author.id == 432610292342587392: # Mudae Bot
+            raise ValueError('Message author is not Mudae')
+
+        if not "**=>** $tuarrange" in tu_message.content:
+            raise ValueError('Message is not a $tu from Mudae')
+
+        l_tu = tu_message.content.split("\n")
+        self.message_id = tu_message.id
 
         ## Primera línea MARRY
         try:
@@ -58,7 +71,7 @@ class MudaeTuRecord ():
 
 
         ## Sexta y novena línea, POWER + STOCK
-        self.power =  re.search(r"\*\*[^*]*", l_tu[5])[0].replace('*', '')
+        self.power =  re.search(r"\*\*[^*]*", l_tu[5])[0].replace('*', '').replace("%", '')
         self.stock =  re.search(r"\*\*[^*]*", l_tu[8])[0].replace('*', '')
 
 
@@ -87,21 +100,23 @@ class MudaeTuRecord ():
             self.can_vote_reset =  "0"
 
     def __str__(self):
-        return """Object user: {}
-        can_claim: {}
-        claim_reset: {}
-        rolls: {}
-        rolls_reset: {}
-        daily: {}
-        daily_reset: {},
-        kadera: {}
-        kadera_reset: {}
-        power: {}
-        stock: {}
-        can_dk: {}
-        can_dk_reset: {}
-        can_vote: {}
-        can_vote_reset: {}
+        return """
+\tObject user:\t\t**{}**
+\tCan claim:\t\t**{}**
+\tClaim reset:\t\t**{}**
+\tRolls:\t\t\t**{}**
+\tRolls reset:\t\t**{}**
+\tDaily:\t\t\t**{}**
+\tDaily reset:\t\t**{}**
+\tKakera:\t\t\t**{}**
+\tKakera reset:\t\t**{}**
+\tPower:\t\t\t**{}**
+\tStock:\t\t\t**{}**
+\tCan $dk:\t\t**{}**
+\tCan $dk_reset:\t\t**{}**
+\tCan vote:\t\t**{}**
+\tCan vote reset:\t\t**{}**
+\tMessage ID:\t\t{}
         """.format(
             self.user,
             self.can_claim,
@@ -118,4 +133,27 @@ class MudaeTuRecord ():
             self.can_dk_reset,
             self.can_vote,
             self.can_vote_reset,
+            self.message_id,
         )
+
+    def print(self):
+        print(self.__str__().replace("*", ''))
+
+    def save(self):
+        pass
+
+### Mudae claim embed
+class MudaeClaimEmbed():
+    def __init__(self, message):
+        ## Verify message is valid:
+        embeds = getattr(message, "embeds")
+        if not len(embeds) == 1: # An embed only:
+            raise TypeError('Message doesn\'t contain an embed')
+
+        if not message.author.id == 432610292342587392: # Mudae Bot
+            raise ValueError('Message author is not Mudae')
+
+        if "**=>** $tuarrange" in message.content:
+            raise ValueError('Message is a $tu from Mudae')
+
+        print("\nMessage ID: {}\n".format(message.id))
