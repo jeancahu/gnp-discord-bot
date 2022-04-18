@@ -21,6 +21,15 @@ import re
 from inspect import getmembers
 from mudae import MudaeTuRecord, MudaeClaimEmbed
 
+import signal
+
+def handler_stop_signals(signal, frame):
+    print("Good bye!")
+    exit(0)
+
+signal.signal(signal.SIGINT, handler_stop_signals)
+signal.signal(signal.SIGTERM, handler_stop_signals)
+
 ## Users list
 samus = (654134051854352404, "Samus")
 bayo = (649724009243738122, "Nabonetta")
