@@ -18,6 +18,8 @@ from constants import white_list, fotos_samus, bayo_images
 
 import re
 
+from mudae import MudaeTuRecord
+
 ## Users list
 samus = (654134051854352404, "Samus")
 bayo = (649724009243738122, "Nabonetta")
@@ -61,7 +63,15 @@ broker_address = "localhost"
 broker_topic = "discord"
 
 mqtt_client = mqtt.Client("P1")
-mqtt_client.connect(broker_address)
+mqtt_enable = True
+try:
+    mqtt_client.connect(broker_address)
+except ConnectionRefusedError:
+    print("MQTT server not found")
+    mqtt_enable = False
+
+## Mudae $tu buffer:
+mudae_tu_buffer = list()
 
 ## Discord bot initialization
 intents = Intents.default()
@@ -83,33 +93,37 @@ async def globally_block_dms(ctx):
     return ctx.guild is not None
 
 async def on_ready():
-    print("Bot is online, discord version: {}".format(discord_version))
-    # log_channel = bot.get_channel(912781470668582962) # FIXME
+    print("Bot is online, Pycord version: {}".format(discord_version))
 
 @guild_only(guild_id) # Works for gnp server only
 async def on_message(message):
+    global mqtt_enable
     if message.author.id == 863062654699438110: # Bot itself
         return
 
     if message.author.id == 432610292342587392: # Mudae Bot
+        ## Special processing for $tu output
         try:
             embeds = getattr(message, "embeds")
-
             if len(embeds) == 1: # An embed only:
-                mqtt_message = "Embed on message -> Title (author): {}\nTitle: {}\nDescription: {}".format(
-                    embeds[0].author.name,
-                    embeds[0].title,
-                    embeds[0].description.split('\n')[0])
-
-                print(mqtt_message)
-                mqtt_client.publish(broker_topic, mqtt_message) # Publish
+                if mqtt_enable:
+                    mqtt_message = "Embed on message -> Title (author): {}\nTitle: {}\nDescription: {}".format(
+                        embeds[0].author.name,
+                        embeds[0].title,
+                        embeds[0].description.split('\n')[0])
+                    mqtt_client.publish(broker_topic, mqtt_message) # Publish
 
             else: ## Ignore embeds without title TODO
-                ## Special processing for $tu output
                 if "**=>** $tuarrange" in message.content:
-                    mqtt_message = "\n".join(["$tu command output: {}".format(line) for line in message.content.split('\n')])
-                    print(mqtt_message)
-                    mqtt_client.publish(broker_topic, mqtt_message) # Publish
+
+                    # Init a mudae $tu record object
+                    mudae_tu_record_temp = MudaeTuRecord(message.content) # TODO
+                    await message.reply(str(mudae_tu_record_temp))
+                    if mqtt_enable:
+                        mqtt_message = "\n".join(["$tu command output: {}".format(line) for line in message.content.split('\n')])
+                        mqtt_client.publish(broker_topic, mqtt_message) # Publish
+
+                    return
                 else:
                     print("Mudae BOT: {}".format(message.content))
 
