@@ -159,6 +159,27 @@ async def on_reaction_add(reaction, user):
     if user.id == 863062654699438110: # Bot itself
         return
 
+    if user.id == 432610292342587392: # Mudae Bot
+        print("Mudae reaction")
+
+        try:
+            # Init a mudaeClimEmbed record object
+            mudae_claim_embed_temp = MudaeClaimEmbed(reaction.message)
+            # return
+        except ValueError as e:
+            pass
+        except TypeError as e:
+            pass
+
+@bot.command()
+async def tu(ctx):
+    """
+    tu record from Mudae db
+    """
+    await ctx.send(
+        str(MudaeTuRecord(ctx.author.name, from_db=True))
+    )
+
 @bot.command()
 async def roles(ctx, *, member: MemberRoles = None):
     """

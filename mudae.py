@@ -6,18 +6,35 @@ class MudaeTuRecord ():
     connection = sqlite3.connect('mudae.db')
     cursor = connection.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS tu_record
-              (user TEXT varchar(30) primary key, can_claim BOOLEAN NOT NULL, claim_reset INT NOT NULL, rolls INT NOT NULL, rolls_reset INT NOT NULL)''')
+              (user TEXT varchar(30) primary key, can_claim BOOLEAN NOT NULL,
+    claim_reset INT NOT NULL, rolls INT NOT NULL, rolls_reset INT NOT NULL,
+    daily BOOLEAN NOT NULL, daily_reset INT NOT NULL, kakera BOOLEAN NOT NULL,
+    kakera_reset INT NOT NULL, power INT NOT NULL, stock INT NOT NULL,
+    can_dk BOOLEAN NOT NULL, can_dk_reset INT NOT NULL, can_vote BOOLEAN NOT NULL,
+    can_vote_reset INT NOT NULL, message_id INT NOT NULL)''')
     connection.commit()
 
-    sql = ''' INSERT OR REPLACE INTO tu_record(user,can_claim,claim_reset,rolls,rolls_reset)
-    VALUES(?,?,?,?,?) '''
+    sql_save = ''' INSERT OR REPLACE INTO tu_record(user,can_claim,claim_reset,
+    rolls,rolls_reset,daily,daily_reset,
+    kakera,kakera_reset,power,stock,can_dk,
+    can_dk_reset,can_vote,can_vote_reset,message_id)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
-    cursor.execute(sql, ["homura",True,30,1,30])
-    connection.commit()
+    sql_load= ''' SELECT user,can_claim,claim_reset,
+    rolls,rolls_reset,daily,daily_reset,
+    kakera,kakera_reset,power,stock,can_dk,
+    can_dk_reset,can_vote,can_vote_reset,message_id FROM tu_record
+    WHERE user=? '''
 
-    connection.close() # TODO FIXME
+    # Use a class method to close the db
+    #connection.close() # TODO FIXME
 
-    def __init__(self, tu_message):
+    def __init__(self, tu_message, from_db=False):
+
+        if from_db:
+            self.user = tu_message
+            self.load(tu_message)
+            return
 
         ## Verify message is valid:
         embeds = getattr(tu_message, "embeds")
@@ -119,19 +136,19 @@ class MudaeTuRecord ():
         return """
 \tObject user:\t\t**{}**
 \tCan claim:\t\t**{}**
-\tClaim reset:\t\t**{}**
+\tClaim reset:\t\t**{}** minutes
 \tRolls:\t\t\t**{}**
-\tRolls reset:\t\t**{}**
+\tRolls reset:\t\t**{}** minutes
 \tDaily:\t\t\t**{}**
-\tDaily reset:\t\t**{}**
+\tDaily reset:\t\t**{}** minutes
 \tKakera:\t\t\t**{}**
-\tKakera reset:\t\t**{}**
+\tKakera reset:\t\t**{}** minutes
 \tPower:\t\t\t**{}**
 \tStock:\t\t\t**{}**
 \tCan $dk:\t\t**{}**
-\tCan $dk_reset:\t\t**{}**
+\tCan $dk_reset:\t\t**{}** minutes
 \tCan vote:\t\t**{}**
-\tCan vote reset:\t\t**{}**
+\tCan vote reset:\t\t**{}** minutes
 \tMessage ID:\t\t{}
         """.format(
             self.user,
@@ -156,7 +173,49 @@ class MudaeTuRecord ():
         print(self.__str__().replace("*", ''))
 
     def save(self):
-        pass
+        self.cursor.execute(self.sql_save, [
+            self.user,
+            self.can_claim,
+            self.claim_reset,
+            self.rolls,
+            self.rolls_reset,
+            self.daily,
+            self.daily_reset,
+            self.kakera,
+            self.kakera_reset,
+            self.power,
+            self.stock,
+            self.can_dk,
+            self.can_dk_reset,
+            self.can_vote,
+            self.can_vote_reset,
+            self.message_id,
+        ])
+        self.connection.commit()
+
+    def load(self, name):
+        self.cursor.execute(self.sql_load, [
+            self.user,
+        ])
+
+        rows = self.cursor.fetchall()
+        for row in rows:
+            self.user = str(row[0])
+            self.can_claim = bool(row[1])
+            self.claim_reset = int(row[2])
+            self.rolls = int(row[3])
+            self.rolls_reset = int(row[4])
+            self.daily = bool(row[5])
+            self.daily_reset = int(row[6])
+            self.kakera = bool(row[7])
+            self.kakera_reset = int(row[8])
+            self.power = int(row[9])
+            self.stock = int(row[10])
+            self.can_dk = bool(row[11])
+            self.can_dk_reset = int(row[12])
+            self.can_vote = bool(row[13])
+            self.can_vote_reset = int(row[14])
+            self.message_id = int(row[15])
 
 ### Mudae claim embed
 class MudaeClaimEmbed():
