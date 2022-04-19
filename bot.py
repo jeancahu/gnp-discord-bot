@@ -18,7 +18,7 @@ from constants import white_list, fotos_samus, bayo_images
 
 import re
 
-from inspect import getmembers
+from inspect import getmembers # TODO Remove
 from mudae import MudaeTuRecord, MudaeClaimEmbed
 
 import signal
@@ -124,15 +124,6 @@ async def on_message(message):
     except TypeError as e:
         pass
 
-    try:
-        # Init a mudaeClimEmbed record object
-        mudae_claim_embed_temp = MudaeClaimEmbed(message)
-        # return
-    except ValueError as e:
-        pass
-    except TypeError as e:
-        pass
-
     if message.author.id == 432610292342587392: # Mudae Bot
         ## Special processing for $tu output
         try:
@@ -164,12 +155,29 @@ async def on_reaction_add(reaction, user):
 
         try:
             # Init a mudaeClimEmbed record object
-            mudae_claim_embed_temp = MudaeClaimEmbed(reaction.message)
+            for member in getmembers(reaction):
+                if (member[0] == '__doc__'):
+                    print("({}, \"\n{}\n\")".format(member[0], member[1]))
+                else:
+                    print(member)
+
+            print("\n\n\tEmoji ID:\t{}".format(reaction.emoji.id))
+            mudae_claim_embed_temp = MudaeClaimEmbed(reaction)
             # return
         except ValueError as e:
             pass
         except TypeError as e:
             pass
+
+@bot.command()
+async def test(ctx):
+    """
+    tu record from Mudae db
+    """
+    msg = await ctx.channel.fetch_message(965801395607453766)
+    await ctx.send(
+        embed=msg.embeds[0]
+    )
 
 @bot.command()
 async def tu(ctx):

@@ -219,16 +219,22 @@ class MudaeTuRecord ():
 
 ### Mudae claim embed
 class MudaeClaimEmbed():
-    def __init__(self, message):
+    def __init__(self, reaction):
         ## Verify message is valid:
-        embeds = getattr(message, "embeds")
+        embeds = getattr(reaction.message, "embeds")
         if not len(embeds) == 1: # An embed only:
             raise TypeError('Message doesn\'t contain an embed')
 
-        if not message.author.id == 432610292342587392: # Mudae Bot
+        if not reaction.message.author.id == 432610292342587392: # Mudae Bot
             raise ValueError('Message author is not Mudae')
 
-        if "**=>** $tuarrange" in message.content:
+        if "**=>** $tuarrange" in reaction.message.content:
             raise ValueError('Message is a $tu from Mudae')
+
+        if reaction.emoji.id == 847502744176820256: # Rem
+            raise ValueError('Reaction is a Rem emoji')
+
+        if reaction.emoji.id == 847502746025459792: # Ram
+            raise ValueError('Reaction is a Ram emoji')
 
         print("\nMessage ID: {}\n".format(message.id))
