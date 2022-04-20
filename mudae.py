@@ -283,5 +283,4 @@ class MudaeClaimEmbed():
         if reaction.emoji.id == 847502746025459792: # Ram
             raise ValueError('Reaction is a Ram emoji')
 
-        print("\nClaim class Message ID: {},\tReaction emoji ID: {}\n".format(reaction.message.id, reaction.emoji.id))
         bash("bash ./kakera_react.sh")

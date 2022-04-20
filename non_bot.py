@@ -58,7 +58,6 @@ async def on_ready():
 
             ## React with kakera
             await message.add_reaction(reaction.emoji)
-
     await client.close()
 
 ## Run
