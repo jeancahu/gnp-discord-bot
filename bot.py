@@ -155,6 +155,8 @@ async def on_reaction_add(reaction, user):
         # Init a mudaeClimEmbed record object
         mudae_claim_embed_temp = MudaeClaimEmbed(reaction=reaction, user=user)
         # return
+    except AttributeError as e:
+        pass
     except ValueError as e:
         pass
     except TypeError as e:

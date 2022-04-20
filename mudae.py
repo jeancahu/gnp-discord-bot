@@ -274,6 +274,9 @@ class MudaeClaimEmbed():
         if "**=>** $tuarrange" in reaction.message.content:
             raise ValueError('Message is a $tu from Mudae')
 
+        if type(reaction.emoji) == type(str()):
+            raise AttributeError('Emoji is string type')
+
         if reaction.emoji.id == 847502744176820256: # Rem
             raise ValueError('Reaction is a Rem emoji')
 
