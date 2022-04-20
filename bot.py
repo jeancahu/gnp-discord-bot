@@ -113,16 +113,16 @@ async def on_message(message):
 
     try:
         # Init a mudae $tu record object
-        mudae_tu_record_temp = MudaeTuRecord(message)
-        mudae_tu_record_temp.print()
-        mudae_tu_record_temp.save()
-
-        #await message.reply(str(mudae_tu_record_temp))
-        return
+        if message.author.id == 432610292342587392: # Mudae Bot
+            mudae_tu_record_temp = MudaeTuRecord(message)
+            mudae_tu_record_temp.save()
+            return
     except ValueError as e:
         pass
+        # print("\tError: {}".format(e))
     except TypeError as e:
         pass
+        # print("\tError: {}".format(e))
 
     if message.author.id == 432610292342587392: # Mudae Bot
         ## Special processing for $tu output
@@ -140,7 +140,8 @@ async def on_message(message):
                 ##print(getmembers(message)) ## FIXME remove
 
         except Exception as e: # There is not Embed
-            print("Mudae BOT (except {}): {}".format(e, message.content))
+            pass
+            # print("Mudae BOT (except {}): {}".format(e, message.content))
         return
 
     ## AntiScam # TODO fix false positive
@@ -150,24 +151,14 @@ async def on_reaction_add(reaction, user):
     if user.id == 863062654699438110: # Bot itself
         return
 
-    if user.id == 432610292342587392: # Mudae Bot
-        print("Mudae reaction")
-
-        try:
-            # Init a mudaeClimEmbed record object
-            for member in getmembers(reaction):
-                if (member[0] == '__doc__'):
-                    print("({}, \"\n{}\n\")".format(member[0], member[1]))
-                else:
-                    print(member)
-
-            print("\n\n\tEmoji ID:\t{}".format(reaction.emoji.id))
-            mudae_claim_embed_temp = MudaeClaimEmbed(reaction)
-            # return
-        except ValueError as e:
-            pass
-        except TypeError as e:
-            pass
+    try:
+        # Init a mudaeClimEmbed record object
+        mudae_claim_embed_temp = MudaeClaimEmbed(reaction=reaction, user=user)
+        # return
+    except ValueError as e:
+        pass
+    except TypeError as e:
+        pass
 
 @bot.command()
 async def test(ctx):

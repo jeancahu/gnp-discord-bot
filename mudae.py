@@ -1,5 +1,7 @@
 import re
 import sqlite3
+from os import system as bash
+from time import time
 
 class MudaeTuRecord ():
     ## Class members:
@@ -11,19 +13,19 @@ class MudaeTuRecord ():
     daily BOOLEAN NOT NULL, daily_reset INT NOT NULL, kakera BOOLEAN NOT NULL,
     kakera_reset INT NOT NULL, power INT NOT NULL, stock INT NOT NULL,
     can_dk BOOLEAN NOT NULL, can_dk_reset INT NOT NULL, can_vote BOOLEAN NOT NULL,
-    can_vote_reset INT NOT NULL, message_id INT NOT NULL)''')
+    can_vote_reset INT NOT NULL, message_id INT NOT NULL, min_time INT NOT NULL)''')
     connection.commit()
 
     sql_save = ''' INSERT OR REPLACE INTO tu_record(user,can_claim,claim_reset,
     rolls,rolls_reset,daily,daily_reset,
     kakera,kakera_reset,power,stock,can_dk,
-    can_dk_reset,can_vote,can_vote_reset,message_id)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
+    can_dk_reset,can_vote,can_vote_reset,message_id,min_time)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
     sql_load= ''' SELECT user,can_claim,claim_reset,
     rolls,rolls_reset,daily,daily_reset,
     kakera,kakera_reset,power,stock,can_dk,
-    can_dk_reset,can_vote,can_vote_reset,message_id FROM tu_record
+    can_dk_reset,can_vote,can_vote_reset,message_id,min_time FROM tu_record
     WHERE user=? '''
 
     # Use a class method to close the db
@@ -49,6 +51,7 @@ class MudaeTuRecord ():
 
         l_tu = tu_message.content.split("\n")
         self.message_id = tu_message.id
+        self.min_time = int(time()/60) # Time in minutes
 
         ## Primera línea MARRY
         try:
@@ -150,6 +153,7 @@ class MudaeTuRecord ():
 \tCan vote:\t\t**{}**
 \tCan vote reset:\t\t**{}** minutes
 \tMessage ID:\t\t{}
+\tTime:\t\t{} minutes
         """.format(
             self.user,
             self.can_claim,
@@ -167,12 +171,14 @@ class MudaeTuRecord ():
             self.can_vote,
             self.can_vote_reset,
             self.message_id,
+            self.min_time,
         )
 
     def print(self):
         print(self.__str__().replace("*", ''))
 
     def save(self):
+        self.update()
         self.cursor.execute(self.sql_save, [
             self.user,
             self.can_claim,
@@ -190,6 +196,7 @@ class MudaeTuRecord ():
             self.can_vote,
             self.can_vote_reset,
             self.message_id,
+            self.min_time,
         ])
         self.connection.commit()
 
@@ -216,10 +223,46 @@ class MudaeTuRecord ():
             self.can_vote = bool(row[13])
             self.can_vote_reset = int(row[14])
             self.message_id = int(row[15])
+            self.min_time = int(row[16])
+
+    def update(self):
+        claim_reset = int(self.claim_reset) + int(int(self.min_time) - int(time()/60))
+        if claim_reset <= 0:
+            self.can_claim = True
+            self.claim_reset = 0
+        else:
+            self.can_claim = False
+            self.claim_reset = claim_reset
+
+        # TODO
+        # self.rolls
+        # self.rolls_reset
+
+        # self.daily
+        # self.daily_reset
+
+        # self.kakera
+        # self.kakera_reset
+
+        # self.power
+        # self.stock
+
+        # self.can_dk
+        # self.can_dk_reset
+        # self.can_vote
+        # self.can_vote_reset
+        # self.message_id
+        # self.min_time
+
 
 ### Mudae claim embed
 class MudaeClaimEmbed():
-    def __init__(self, reaction):
+    def __init__(self, reaction, user=None):
+
+        if user: # User is supplied
+            if not user.id == 432610292342587392: # Not Mudae Bot
+                raise ValueError('Reaction author is not Mudae')
+
         ## Verify message is valid:
         embeds = getattr(reaction.message, "embeds")
         if not len(embeds) == 1: # An embed only:
@@ -237,4 +280,5 @@ class MudaeClaimEmbed():
         if reaction.emoji.id == 847502746025459792: # Ram
             raise ValueError('Reaction is a Ram emoji')
 
-        print("\nMessage ID: {}\n".format(message.id))
+        print("\nClaim class Message ID: {},\tReaction emoji ID: {}\n".format(reaction.message.id, reaction.emoji.id))
+        bash("bash ./kakera_react.sh")
