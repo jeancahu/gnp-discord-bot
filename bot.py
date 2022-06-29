@@ -5,6 +5,7 @@ from discord import __version__ as discord_version
 from discord.ext import commands # it's no needed for 1.7.3> # TODO (Change on 1.7.3 release)
 
 import paho.mqtt.client as mqtt
+import asyncio
 
 from sys import exit
 from time import sleep, time
@@ -22,6 +23,7 @@ from inspect import getmembers # TODO Remove
 from mudae import MudaeTuRecord, MudaeClaimEmbed
 
 import signal
+from utils import print_colors, print_member_list
 
 def handler_stop_signals(signal, frame):
     print("Good bye!")
@@ -87,8 +89,8 @@ mudae_tu_buffer = list()
 intents = Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix="h>", intents=intents, case_insensitive=True)
-bot.remove_command("help")
+bot = commands.Bot(command_prefix=">", intents=intents, case_insensitive=True)
+# bot.remove_command("help")
 
 log_channel = None
 
@@ -102,9 +104,26 @@ async def globally_block_dms(ctx):
     # Block DMs
     return ctx.guild is not None
 
+@bot.listen()
 async def on_ready():
     print("Bot is online, Pycord version: {}".format(discord_version))
+    guild = [i for i in bot.guilds if i.id == 699053837360824414][0]
+    print(guild.name)
 
+    print_member_list(guild)
+    print_colors(guild)
+
+@bot.listen()
+async def on_member_join(member):
+    await member.edit(nick=member.display_name.upper())
+
+@bot.listen()
+async def on_member_update(before, after):
+    # If is needed to avoid recursivity
+    if not after.display_name == after.display_name.upper():
+        await after.edit(nick=after.display_name.upper())
+
+@bot.listen()
 @guild_only(guild_id) # Works for gnp server only
 async def on_message(message):
     global mqtt_enable
@@ -147,6 +166,7 @@ async def on_message(message):
     ## AntiScam # TODO fix false positive
     ## await AntiScam.AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=None)
 
+@bot.listen()
 async def on_reaction_add(reaction, user):
     if user.id == 863062654699438110: # Bot itself
         return
@@ -161,6 +181,78 @@ async def on_reaction_add(reaction, user):
         pass
     except TypeError as e:
         pass
+
+@bot.command()
+@commands.has_role("ADMN")
+@guild_only(guild_id) # Works for gnp server only
+async def meml(ctx):
+    """
+    Member list
+    """
+    guild = [i for i in bot.guilds if i.id == 699053837360824414][0]
+    member_list = "\n".join([member.display_name for member in guild.members if not member.bot])
+    await ctx.send(member_list)
+
+@bot.command()
+@commands.has_role("ADMN")
+@guild_only(guild_id) # Works for gnp server only
+async def upper(ctx):
+    """
+    Uppercase name for each member
+    """
+    guild = [i for i in bot.guilds if i.id == 699053837360824414][0]
+
+    task_list = []
+    for member in [ member for member in guild.members if member.top_role.name == "member"]:
+        ## Edit nickname to upper case
+        if member.display_name.upper() != member.display_name:
+            try:
+                task_list.append(
+                    asyncio.create_task(member.edit(nick=member.display_name.upper()))
+                )
+            except Exception as e:
+                pass
+
+    for task in task_list:
+        await task
+    await ctx.message.add_reaction("👍")
+
+# @bot.command() # Disabled due on_member_update listener
+@commands.has_role("ADMN")
+@guild_only(guild_id) # Works for gnp server only
+async def lower(ctx):
+    """
+    Uppercase name for each member
+    """
+    guild = [i for i in bot.guilds if i.id == 699053837360824414][0]
+
+    task_list = []
+    for member in [ member for member in guild.members if member.top_role.name == "member"]:
+        ## Edit nickname to upper case
+        if member.display_name.lower() != member.display_name:
+            try:
+                task_list.append(
+                    asyncio.create_task(member.edit(nick=member.display_name.lower()))
+                )
+            except Exception as e:
+                pass
+
+    for task in task_list:
+        await task
+    await ctx.message.add_reaction("👍")
+
+
+@bot.command()
+@commands.has_role("ADMN")
+@guild_only(guild_id) # Works for gnp server only
+async def memberall(ctx):
+    """
+    Search for non-member people, append member role to them
+    """
+    role = utils.get(ctx.guild.roles, name="member")
+    for member in [i for i in ctx.guild.members if not i.bot]:
+        if not 'member' in [role.name for role in member.roles]:
+            await member.add_roles(role)
 
 @bot.command()
 async def test(ctx):
@@ -184,7 +276,7 @@ async def tu(ctx):
 @bot.command()
 async def roles(ctx, *, member: MemberRoles = None):
     """
-    Tells you a member's roles.
+    Shows a member's roles.
     * means next arguments will be named args
     """
     if member:
@@ -312,7 +404,4 @@ bot.command(name="homuri")(name)
 bot.command()(ping)
 
 ## Run
-bot.add_listener(on_ready)
-bot.add_listener(on_message, "on_message")
-bot.add_listener(on_reaction_add, "on_reaction_add")
 bot.run(TOKEN)
