@@ -130,6 +130,57 @@ async def on_message(message):
     if message.author.id == 863062654699438110: # Bot itself
         return
 
+    if message.author.id == 408785106942164992 and "zoo!" in message.content: # OwO bot
+        content = message.content
+        tiny_digits = "⁰¹²³⁴⁵⁶⁷⁸⁹"
+        animals = [
+            ["🐝", "bee"],
+            ["🐛", "worm"],
+            ["🐌", "snail"],
+            ["🐞", "ladybug"],
+            ["🦋", "butterfly"],
+            ["🐤", "chick"],
+            ["🐁", "rat"],
+            ["🐓", "chicken"],
+            ["🐇", "bunny"],
+            ["🐿", "squirrel"],
+            ["🐑", "sheep"],
+            ["🐖", "pig"],
+            ["🐄", "cow"],
+            ["🐕", "dog"],
+            ["🐈", "cat"],
+            ["🐊", "alligator"],
+            ["🐅", "tiger"],
+            ["🐧", "penguin"],
+            ["🐘", "elephant"],
+            ["🐳", "whale"],
+            ["🐉", "dragon"],
+            ["🦄", "unicorn"],
+            ["☃", "snowman"],
+            ["👻", "ghost"],
+            ["🕊", "dove"],
+            ["<a:gdeer:418290217989046274>", "deer"],
+            ["<a:gfox:418291892376305664>", "fox"],
+            ["<a:glion:418289164736528404>", "lion"],
+            ["<a:gowl:418284974593277954>", "owl"],
+            ["<a:gsquid:417968419984375808>", "squid"]
+        ]
+        for i in range(10):
+            content = content.replace(tiny_digits[i], str(i))
+
+        content = content.split("\n")[1:-2]
+        temp = []
+        result = []
+        for line in content:
+            temp += \
+                [ value for value in line.split(' ')[1:] if len(value) ]
+
+        for line, animal in zip(temp[:len(animals)], animals):
+            result.append(line.replace(animal[0], animal[1] + " " ))
+
+        print("owo sacrifice " + "\nowo sacrifice ".join(result))
+        return
+
     try:
         # Init a mudae $tu record object
         if message.author.id == 432610292342587392: # Mudae Bot
