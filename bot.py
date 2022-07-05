@@ -124,6 +124,7 @@ async def on_member_join(member):
         await member.add_roles(member_role)
 
 @bot.listen()
+@guild_only(guild_id) # Works for gnp server only
 async def on_member_update(before, after):
     # If is needed to avoid recursivity
     if not after.display_name == after.display_name.upper():
@@ -243,18 +244,17 @@ async def on_reaction_add(reaction, user):
         pass
 
 @bot.command()
-@commands.has_role("ADMN")
-@guild_only(guild_id) # Works for gnp server only
+@commands.has_permissions(administrator=True)
 async def meml(ctx):
     """
     Member list
     """
-    guild = [i for i in bot.guilds if i.id == 699053837360824414][0]
+    guild = ctx.guild # Do it for every guild
     member_list = "\n".join([member.display_name for member in guild.members if not member.bot])
     await ctx.send(member_list)
 
 @bot.command()
-@commands.has_role("ADMN")
+@commands.has_permissions(administrator=True)
 @guild_only(guild_id) # Works for gnp server only
 async def upper(ctx):
     """
@@ -278,7 +278,7 @@ async def upper(ctx):
     await ctx.message.add_reaction("👍")
 
 # @bot.command() # Disabled due on_member_update listener
-@commands.has_role("ADMN")
+@commands.has_permissions(administrator=True)
 @guild_only(guild_id) # Works for gnp server only
 async def lower(ctx):
     """
@@ -303,8 +303,7 @@ async def lower(ctx):
 
 
 @bot.command()
-@commands.has_role("ADMN")
-@guild_only(guild_id) # Works for gnp server only
+@commands.has_permissions(administrator=True)
 async def memberall(ctx):
     """
     Search for non-member people, append member role to them
@@ -353,7 +352,7 @@ async def member(ctx, *, member: Member):
     await ctx.send('**{}**'.format(member))
 
 @bot.command(name="mute", aliases=["m"])
-@commands.has_role("ADMN")
+@commands.has_permissions(administrator=True)
 @guild_only(guild_id) # Works for gnp server only
 async def mute(ctx, *, member: Member):
     """
@@ -368,7 +367,7 @@ async def mute(ctx, *, member: Member):
     await ctx.send('**{}** is muted'.format(member.name))
 
 @bot.command(name="muted_members", aliases=["mm"])
-@commands.has_role("ADMN")
+@commands.has_permissions(administrator=True)
 @guild_only(guild_id) # Works for gnp server only
 async def muted_members(ctx):
     """
@@ -393,7 +392,7 @@ async def muted_members(ctx):
     )
 
 @bot.command(name="unmute", aliases=["um"])
-@commands.has_role("ADMN")
+@commands.has_permissions(administrator=True)
 @guild_only(guild_id) # Works for gnp server only
 async def unmute(ctx, *, member: Member):
     """
