@@ -115,7 +115,13 @@ async def on_ready():
 
 @bot.listen()
 async def on_member_join(member):
+    member_role = utils.get(ctx.guild.roles, name="member")
     await member.edit(nick=member.display_name.upper())
+
+    ## Add the member role to a new guild member
+    if member_role:
+        ## TODO Verify if the account is real
+        await member.add_roles(member_role)
 
 @bot.listen()
 async def on_member_update(before, after):
@@ -176,7 +182,10 @@ async def on_message(message):
                 [ value for value in line.split(' ')[1:] if len(value) ]
 
         for line, animal in zip(temp[:len(animals)], animals):
-            result.append(line.replace(animal[0], animal[1] + " " ))
+            new_line = line.replace(animal[0], animal[1] + " " ).split(" ")
+
+            if int(new_line[1]):
+                result.append(" ".join(new_line))
 
         print("owo sacrifice " + "\nowo sacrifice ".join(result))
         return
