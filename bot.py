@@ -92,6 +92,7 @@ mudae_tu_buffer = list()
 ## Discord bot initialization
 intents = Intents.default()
 intents.members = True
+intents.message_content = True
 
 bot = commands.Bot(command_prefix=">", intents=intents, case_insensitive=True)
 # bot.remove_command("help")
