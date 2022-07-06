@@ -112,7 +112,7 @@ async def globally_block_dms(ctx):
 @bot.listen()
 async def on_ready():
     print("Bot is online, Pycord version: {}".format(discord_version))
-    guild = [i for i in bot.guilds if i.id == 699053837360824414][0]
+    guild = [i for i in bot.guilds if i.id == guild_id][0]
     print(guild.name)
 
     print_member_list(guild)
@@ -123,7 +123,8 @@ async def on_member_join(member):
     member_role = utils.get(member.guild.roles, name="member")
     bots_role = [ role for role in member.guild.roles if role.name.lower() == 'bots' ]
 
-    await member.edit(nick=member.display_name.upper())
+    if member.guild.id == guild_id: ## Config for gaenabs
+        await member.edit(nick=member.display_name.upper())
 
     if bots_role and member.bot:
         await member.add_roles(bots_role[0])
