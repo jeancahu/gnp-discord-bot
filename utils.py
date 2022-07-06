@@ -60,6 +60,5 @@ def print_member_list(guild):
             )
         )
 
-
     member_str = "\n".join(member_list)
     print(member_str)

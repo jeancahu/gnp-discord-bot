@@ -51,6 +51,7 @@ def only_for_user(user_id, user_name): # Functions who returns a decorator
             new_message = await ctx.send("Hey, you are not {}!".format(user_name))
             sleep(3)
             await new_message.delete()
+            await ctx.message.delete()
             return False
         return True
     return commands.check(predicate)
@@ -310,7 +311,6 @@ async def lower(ctx):
     for task in task_list:
         await task
     await ctx.message.add_reaction("👍")
-
 
 @bot.command()
 @commands.has_permissions(administrator=True)
