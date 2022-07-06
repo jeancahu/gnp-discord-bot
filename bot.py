@@ -35,6 +35,7 @@ signal.signal(signal.SIGTERM, handler_stop_signals)
 ## Users list
 samus = (654134051854352404, "Samus")
 bayo = (649724009243738122, "Nabonetta")
+mondo = (117773868671696899, "Mondo")
 
 guild_id = 699053837360824414 # GNP
 
@@ -47,7 +48,9 @@ def guild_only(guild_id):
 def only_for_user(user_id, user_name): # Functions who returns a decorator
     async def predicate(ctx):
         if not ctx.author.id == user_id:
-            await ctx.send("Hey tú no eres {}!".format(user_name))
+            new_message = await ctx.send("Hey, you are not {}!".format(user_name))
+            sleep(3)
+            await new_message.delete()
             return False
         return True
     return commands.check(predicate)
@@ -115,13 +118,20 @@ async def on_ready():
 
 @bot.listen()
 async def on_member_join(member):
-    member_role = utils.get(ctx.guild.roles, name="member")
+    member_role = utils.get(member.guild.roles, name="member")
+    bots_role = [ role for role in member.guild.roles if role.name.lower() == 'bots' ]
+
     await member.edit(nick=member.display_name.upper())
 
+    if bots_role and member.bot:
+        await member.add_roles(bots_role[0])
+        return
+
     ## Add the member role to a new guild member
-    if member_role:
+    if member_role and not member.bot:
         ## TODO Verify if the account is real
         await member.add_roles(member_role)
+        return
 
 @bot.listen()
 @guild_only(guild_id) # Works for gnp server only
@@ -338,10 +348,34 @@ async def roles(ctx, *, member: MemberRoles = None):
     Shows a member's roles.
     * means next arguments will be named args
     """
+
     if member:
         await ctx.send('I see the following roles: **{}**'.format('**, **'.join(member)))
         return
     await ctx.send('I see the following roles: **{}**'.format('**, **'.join([str(i) for i in ctx.author.roles[1:]]))) # [1:] removes everyone role
+
+@bot.command()
+@only_for_user(mondo[0], mondo[1])
+async def shabi(ctx, *, member: Member = None):
+    """
+    Prepends SHABI to the display name of given member
+    """
+    if not member:
+        return
+
+    ## Do not change bots names
+    if member.bot:
+        return
+
+    if not "SHABI" in member.display_name:
+        new_nick = "SHABI "+member.display_name
+        await member.edit(nick=new_nick)
+
+    elif "SHABI " in member.display_name:
+        new_nick = member.display_name.replace("SHABI ", "")
+        await member.edit(nick=new_nick)
+
+    await ctx.message.add_reaction("👍")
 
 @bot.command()
 async def member(ctx, *, member: Member):
