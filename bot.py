@@ -33,11 +33,11 @@ signal.signal(signal.SIGINT, handler_stop_signals)
 signal.signal(signal.SIGTERM, handler_stop_signals)
 
 ## Users list
-samus = (654134051854352404, "Samus")
-bayo = (649724009243738122, "Nabonetta")
-mondo = (117773868671696899, "Mondo")
+samus = 654134051854352404 # Samus
+bayo  = 649724009243738122 # Nabonetta"
+mondo = 117773868671696899 #  Mondo
 
-guild_id = 699053837360824414 # GNP
+gnp_guild_id = 699053837360824414 # GNP
 
 ## Decorators
 def guild_only(guild_id):
@@ -45,10 +45,11 @@ def guild_only(guild_id):
         return ctx.guild and ctx.guild.id == guild_id
     return commands.check(predicate)
 
-def only_for_user(user_id, user_name): # Functions who returns a decorator
+def only_for_user(user_id): # Functions who returns a decorator
     async def predicate(ctx):
         if not ctx.author.id == user_id:
-            new_message = await ctx.send("Hey, you are not {}!".format(user_name))
+            authored_user = utils.get(ctx.guild.members, id=user_id)
+            new_message = await ctx.send("Hey, you are not {}!".format(authored_user.display_name))
             sleep(3)
             await new_message.delete()
             await ctx.message.delete()
@@ -112,7 +113,7 @@ async def globally_block_dms(ctx):
 @bot.listen()
 async def on_ready():
     print("Bot is online, Pycord version: {}".format(discord_version))
-    guild = [i for i in bot.guilds if i.id == guild_id][0]
+    guild = utils.get(bot.guilds, id=gnp_guild_id)
     print(guild.name)
 
     print_member_list(guild)
@@ -123,7 +124,7 @@ async def on_member_join(member):
     member_role = utils.get(member.guild.roles, name="member")
     bots_role = [ role for role in member.guild.roles if role.name.lower() == 'bots' ]
 
-    if member.guild.id == guild_id: ## Config for gaenabs
+    if member.guild.id == gnp_guild_id: ## Config for gaenabs
         await member.edit(nick=member.display_name.upper())
 
     if bots_role and member.bot:
@@ -137,14 +138,14 @@ async def on_member_join(member):
         return
 
 @bot.listen()
-@guild_only(guild_id) # Works for gnp server only
+@guild_only(gnp_guild_id) # Works for gnp server only
 async def on_member_update(before, after):
     # If is needed to avoid recursivity
     if not after.display_name == after.display_name.upper():
         await after.edit(nick=after.display_name.upper())
 
 @bot.listen()
-@guild_only(guild_id) # Works for gnp server only
+@guild_only(gnp_guild_id) # Works for gnp server only
 async def on_message(message):
     global mqtt_enable
     if message.author.id == 863062654699438110: # Bot itself
@@ -268,13 +269,12 @@ async def meml(ctx):
 
 @bot.command()
 @commands.has_permissions(administrator=True)
-@guild_only(guild_id) # Works for gnp server only
+@guild_only(gnp_guild_id) # Works for gnp server only
 async def upper(ctx):
     """
     Uppercase name for each member
     """
-    guild = [i for i in bot.guilds if i.id == 699053837360824414][0]
-
+    guild = utils.get(bot.guilds, id=gnp_guild_id)
     task_list = []
     for member in [ member for member in guild.members if member.top_role.name == "member"]:
         ## Edit nickname to upper case
@@ -292,13 +292,12 @@ async def upper(ctx):
 
 # @bot.command() # Disabled due on_member_update listener
 @commands.has_permissions(administrator=True)
-@guild_only(guild_id) # Works for gnp server only
+@guild_only(gnp_guild_id) # Works for gnp server only
 async def lower(ctx):
     """
     Uppercase name for each member
     """
-    guild = [i for i in bot.guilds if i.id == 699053837360824414][0]
-
+    guild = utils.get(bot.guilds, id=gnp_guild_id)
     task_list = []
     for member in [ member for member in guild.members if member.top_role.name == "member"]:
         ## Edit nickname to upper case
@@ -324,6 +323,8 @@ async def memberall(ctx):
     for member in [i for i in ctx.guild.members if not i.bot]:
         if not 'member' in [role.name for role in member.roles]:
             await member.add_roles(role)
+
+    await ctx.message.add_reaction("👍")
 
 @bot.command()
 async def test(ctx):
@@ -357,7 +358,7 @@ async def roles(ctx, *, member: MemberRoles = None):
     await ctx.send('I see the following roles: **{}**'.format('**, **'.join([str(i) for i in ctx.author.roles[1:]]))) # [1:] removes everyone role
 
 @bot.command()
-@only_for_user(mondo[0], mondo[1])
+@only_for_user(mondo)
 async def shabi(ctx, *, member: Member = None):
     """
     Prepends SHABI to the display name of given member
@@ -379,17 +380,9 @@ async def shabi(ctx, *, member: Member = None):
 
     await ctx.message.add_reaction("👍")
 
-@bot.command()
-async def member(ctx, *, member: Member):
-    """
-    Tells you a member's name.
-    * means next arguments will be named args
-    """
-    await ctx.send('**{}**'.format(member))
-
 @bot.command(name="mute", aliases=["m"])
 @commands.has_permissions(administrator=True)
-@guild_only(guild_id) # Works for gnp server only
+@guild_only(gnp_guild_id) # Works for gnp server only
 async def mute(ctx, *, member: Member):
     """
     Tells you a member's roles.
@@ -404,7 +397,7 @@ async def mute(ctx, *, member: Member):
 
 @bot.command(name="muted_members", aliases=["mm"])
 @commands.has_permissions(administrator=True)
-@guild_only(guild_id) # Works for gnp server only
+@guild_only(gnp_guild_id) # Works for gnp server only
 async def muted_members(ctx):
     """
     Tells you a member's roles.
@@ -429,7 +422,7 @@ async def muted_members(ctx):
 
 @bot.command(name="unmute", aliases=["um"])
 @commands.has_permissions(administrator=True)
-@guild_only(guild_id) # Works for gnp server only
+@guild_only(gnp_guild_id) # Works for gnp server only
 async def unmute(ctx, *, member: Member):
     """
     Tells you a member's roles.
