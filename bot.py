@@ -15,7 +15,7 @@ from AntiScam import AntiScam
 from asyncio import gather
 
 from commands import ping, name
-from constants import white_list, fotos_samus, bayo_images
+from constants import user_list, gnp_guild_id
 
 import re
 
@@ -31,13 +31,6 @@ def handler_stop_signals(signal, frame):
 
 signal.signal(signal.SIGINT, handler_stop_signals)
 signal.signal(signal.SIGTERM, handler_stop_signals)
-
-## Users list
-samus = 654134051854352404 # Samus
-bayo  = 649724009243738122 # Nabonetta"
-mondo = 117773868671696899 #  Mondo
-
-gnp_guild_id = 699053837360824414 # GNP
 
 ## Decorators
 def guild_only(guild_id):
@@ -96,7 +89,7 @@ intents.members = True
 intents.message_content = True
 
 bot = commands.Bot(command_prefix=">", intents=intents, case_insensitive=True)
-# bot.remove_command("help")
+bot.remove_command("help")
 
 log_channel = None
 
@@ -138,11 +131,11 @@ async def on_member_join(member):
         return
 
 @bot.listen()
-@guild_only(gnp_guild_id) # Works for gnp server only
 async def on_member_update(before, after):
     # If is needed to avoid recursivity
-    if not after.display_name == after.display_name.upper():
-        await after.edit(nick=after.display_name.upper())
+    if after.guild.id == gnp_guild_id: # Only for gnp
+        if not after.display_name == after.display_name.upper():
+            await after.edit(nick=after.display_name.upper())
 
 @bot.listen()
 @guild_only(gnp_guild_id) # Works for gnp server only
@@ -237,9 +230,6 @@ async def on_message(message):
             pass
             # print("Mudae BOT (except {}): {}".format(e, message.content))
         return
-
-    ## AntiScam # TODO fix false positive
-    ## await AntiScam.AntiScam(message, bot=bot, white_list = white_list, muted_role='Muted', verified_role='member', logs_channel=None)
 
 @bot.listen()
 async def on_reaction_add(reaction, user):
@@ -358,7 +348,7 @@ async def roles(ctx, *, member: MemberRoles = None):
     await ctx.send('I see the following roles: **{}**'.format('**, **'.join([str(i) for i in ctx.author.roles[1:]]))) # [1:] removes everyone role
 
 @bot.command()
-@only_for_user(mondo)
+@only_for_user(user_list["mondo"])
 async def shabi(ctx, *, member: Member = None):
     """
     Prepends SHABI to the display name of given member
@@ -374,7 +364,22 @@ async def shabi(ctx, *, member: Member = None):
         new_nick = "SHABI "+member.display_name
         await member.edit(nick=new_nick)
 
-    elif "SHABI " in member.display_name:
+    await ctx.message.add_reaction("👍")
+
+@bot.command()
+@only_for_user(user_list["redguard"])
+async def unshabi(ctx, *, member: Member = None):
+    """
+    Prepends SHABI to the display name of given member
+    """
+    if not member:
+        return
+
+    ## Do not change bots names
+    if member.bot:
+        return
+
+    if "SHABI " in member.display_name:
         new_nick = member.display_name.replace("SHABI ", "")
         await member.edit(nick=new_nick)
 
