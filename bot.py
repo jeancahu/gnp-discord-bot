@@ -15,7 +15,7 @@ from AntiScam import AntiScam
 from asyncio import gather
 
 from commands import ping, name
-from constants import user_list, gnp_guild_id
+from constants import user_list, gnp_guild_id, bots_id
 
 import re
 
@@ -23,7 +23,7 @@ from inspect import getmembers # TODO Remove
 from mudae import MudaeTuRecord, MudaeClaimEmbed
 
 import signal
-from utils import print_colors, print_member_list
+from utils import print_colors, print_member_list, if_zoo_print, compute_for_owo, compute_for_nonbots
 
 def handler_stop_signals(signal, frame):
     print("Good bye!")
@@ -138,80 +138,34 @@ async def on_member_update(before, after):
             await after.edit(nick=after.display_name.upper())
 
 @bot.listen()
-@guild_only(gnp_guild_id) # Works for gnp server only
 async def on_message(message):
     global mqtt_enable
-    if message.author.id == 863062654699438110: # Bot itself
+    ## Bot itself
+    if message.author.id == bots_id["homuri"]: # Bot itself
         return
 
-    if message.author.id == 408785106942164992 and "zoo!" in message.content: # OwO bot
-        content = message.content
-        tiny_digits = "⁰¹²³⁴⁵⁶⁷⁸⁹"
-        animals = [
-            ["🐝", "bee"],
-            ["🐛", "worm"],
-            ["🐌", "snail"],
-            ["🐞", "ladybug"],
-            ["🦋", "butterfly"],
-            ["🐤", "chick"],
-            ["🐁", "rat"],
-            ["🐓", "chicken"],
-            ["🐇", "bunny"],
-            ["🐿", "squirrel"],
-            ["🐑", "sheep"],
-            ["🐖", "pig"],
-            ["🐄", "cow"],
-            ["🐕", "dog"],
-            ["🐈", "cat"],
-            ["🐊", "alligator"],
-            ["🐅", "tiger"],
-            ["🐧", "penguin"],
-            ["🐘", "elephant"],
-            ["🐳", "whale"],
-            ["🐉", "dragon"],
-            ["🦄", "unicorn"],
-            ["☃", "snowman"],
-            ["👻", "ghost"],
-            ["🕊", "dove"],
-            ["<a:gdeer:418290217989046274>", "deer"],
-            ["<a:gfox:418291892376305664>", "fox"],
-            ["<a:glion:418289164736528404>", "lion"],
-            ["<a:gowl:418284974593277954>", "owl"],
-            ["<a:gsquid:417968419984375808>", "squid"]
-        ]
-        for i in range(10):
-            content = content.replace(tiny_digits[i], str(i))
+    ## Non bot
+    if not message.author.bot:
+        await compute_for_nonbots(message)
+        return
 
-        content = content.split("\n")[1:-2]
-        temp = []
-        result = []
-        for line in content:
-            temp += \
-                [ value for value in line.split(' ')[1:] if len(value) ]
-
-        for line, animal in zip(temp[:len(animals)], animals):
-            new_line = line.replace(animal[0], animal[1] + " " ).split(" ")
-
-            if int(new_line[1]):
-                result.append(" ".join(new_line))
-
-        print("owo sacrifice " + "\nowo sacrifice ".join(result))
+    ## only for bots
+    if message.author.id == bots_id["owo"]: # OwO bot
+        await compute_for_owo(message)
         return
 
     try:
         # Init a mudae $tu record object
-        if message.author.id == 432610292342587392: # Mudae Bot
+        if message.author.id == bots_id["mudae"]: # Mudae Bot
             mudae_tu_record_temp = MudaeTuRecord(message)
             mudae_tu_record_temp.save()
             return
     except ValueError as e:
         pass
-        # print("\tError: {}".format(e))
     except TypeError as e:
         pass
-        # print("\tError: {}".format(e))
 
-    if message.author.id == 432610292342587392: # Mudae Bot
+    if message.author.id == bots_id["mudae"]: # Mudae Bot
         ## Special processing for $tu output
         try:
             embeds = getattr(message, "embeds")
@@ -224,16 +178,14 @@ async def on_message(message):
                     mqtt_client.publish(broker_topic, mqtt_message) # Publish
             else:
                 pass
-                ##print(getmembers(message)) ## FIXME remove
 
         except Exception as e: # There is not Embed
             pass
-            # print("Mudae BOT (except {}): {}".format(e, message.content))
         return
 
 @bot.listen()
 async def on_reaction_add(reaction, user):
-    if user.id == 863062654699438110: # Bot itself
+    if user.id == bots_id["homuri"]: # Bot itself
         return
 
     try:
