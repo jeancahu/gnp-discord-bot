@@ -199,6 +199,18 @@ async def on_reaction_add(reaction, user):
     except TypeError as e:
         pass
 
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def count_msgs(ctx):
+
+    # owo_bot = utils.get(ctx.guild.members, id=bots_id["owo"])
+    messages = await ctx.channel.history(limit=10000).flatten()
+    messages_owo = [ i for i in messages if "The coin spins" in i.content ]
+    messages_owo_won = [ i for i in messages_owo if "you won" in i.content ]
+
+    print("Messages amount: {}, Won: {}".format(len(messages_owo), len(messages_owo_won)))
+
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def meml(ctx):
@@ -312,11 +324,14 @@ async def shabi(ctx, *, member: Member = None):
     if member.bot:
         return
 
-    if not "SHABI" in member.display_name:
-        new_nick = "SHABI "+member.display_name
-        await member.edit(nick=new_nick)
+    try:
+        if not "SHABI" in member.display_name:
+            new_nick = "SHABI "+member.display_name
+            await member.edit(nick=new_nick)
+        await ctx.message.add_reaction("👍")
 
-    await ctx.message.add_reaction("👍")
+    except Exception as e:
+        await ctx.message.add_reaction("😥")
 
 @bot.command()
 @only_for_user(user_list["redguard"])
@@ -331,11 +346,14 @@ async def unshabi(ctx, *, member: Member = None):
     if member.bot:
         return
 
-    if "SHABI " in member.display_name:
-        new_nick = member.display_name.replace("SHABI ", "")
-        await member.edit(nick=new_nick)
+    try:
+        if "SHABI " in member.display_name:
+            new_nick = member.display_name.replace("SHABI ", "")
+            await member.edit(nick=new_nick)
+        await ctx.message.add_reaction("👍")
 
-    await ctx.message.add_reaction("👍")
+    except Exception as e:
+        await ctx.message.add_reaction("😥")
 
 @bot.command(name="mute", aliases=["m"])
 @commands.has_permissions(administrator=True)
@@ -345,12 +363,12 @@ async def mute(ctx, *, member: Member):
     Tells you a member's roles.
     * means next arguments will be named args
     """
-    mute_role = ctx.guild.get_role(912781839633096734)
-    member_role = ctx.guild.get_role(912783144015528016)
+    mute_role =   utils.get(ctx.guild.roles, id=912781839633096734)
+    member_role = utils.get(ctx.guild.roles, id=912783144015528016)
 
     await member.add_roles(mute_role)
     await member.remove_roles(member_role)
-    await ctx.send('**{}** is muted'.format(member.name))
+    await ctx.send('**{}** is muted'.format(member.display_name))
 
 @bot.command(name="muted_members", aliases=["mm"])
 @commands.has_permissions(administrator=True)
@@ -360,8 +378,8 @@ async def muted_members(ctx):
     Tells you a member's roles.
     * means next arguments will be named args
     """
-    mute_role = ctx.guild.get_role(912781839633096734)
-    member_role = ctx.guild.get_role(912783144015528016)
+    mute_role =   utils.get(ctx.guild.roles, id=912781839633096734)
+    member_role = utils.get(ctx.guild.roles, id=912783144015528016)
 
     await ctx.message.add_reaction("👍")
     print(
@@ -385,12 +403,12 @@ async def unmute(ctx, *, member: Member):
     Tells you a member's roles.
     * means next arguments will be named args
     """
-    mute_role = ctx.guild.get_role(912781839633096734)
-    member_role = ctx.guild.get_role(912783144015528016)
+    mute_role =   utils.get(ctx.guild.roles, id=912781839633096734)
+    member_role = utils.get(ctx.guild.roles, id=912783144015528016)
 
     await member.add_roles(member_role)
     await member.remove_roles(mute_role)
-    await ctx.send('**{}** is unmuted'.format(member.name))
+    await ctx.send('**{}** is unmuted'.format(member.display_name))
 
 
 @bot.command(name="avatar", aliases=["pp", "pfp"])
@@ -434,13 +452,15 @@ async def randreact(ctx):
 
     message = await ctx.channel.history(limit=2).flatten()
     message = message[1]
+    await ctx.message.delete()
+
     available_emojis = [i for i in ctx.guild.emojis if i.available]
     random_emojis = sample(available_emojis, 9)
 
     await gather(*[
             message.add_reaction(emoji) for emoji in random_emojis
         ])
-    await ctx.message.delete()
+
 
 # Command Homuri
 bot.command(name="homuri")(name)

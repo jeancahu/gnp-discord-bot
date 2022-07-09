@@ -129,7 +129,7 @@ async def compute_for_owo(message):
         nabs_gaes_channel = utils.get(message.guild.text_channels, id=699053838040039557) # gaenabs
 
         if "Here is your daily" in message.content or "You need to wait" in message.content:
-            await nabots_channel.send("OwO said:\n{}\nOn {} channel.".format(message.content, nabs_gaes_channel.name))
+            await nabots_channel.send("OwO sent:\n{}\nOn {} channel.".format(message.content, nabs_gaes_channel.name))
             await message.delete()
             return
 
@@ -147,7 +147,7 @@ async def compute_for_nonbots(message):
         content = [ i for i in content.split(' ') if i ]
 
         if content[0] == "owo":
-            if content[1] == "daily" or "help":
+            if content[1] == "daily" or content[1] == "help":
                 nabots_channel = utils.get(message.guild.text_channels, id=820831827736395816) # nabots
 
                 await nabots_channel.send("{}".format(message.author.mention))
