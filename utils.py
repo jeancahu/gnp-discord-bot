@@ -125,30 +125,74 @@ async def compute_for_owo(message):
     if_zoo_print(message)
 
     if message.channel.id == 699053838040039557: # General GNP in GNP guild
-        nabots_channel = utils.get(message.guild.text_channels, id=820831827736395816) # nabots
-        nabs_gaes_channel = utils.get(message.guild.text_channels, id=699053838040039557) # gaenabs
+        bots_channel = utils.get(message.guild.text_channels, id=820831827736395816) # bots
+        general_channel = utils.get(message.guild.text_channels, id=699053838040039557) # general
 
         if "Here is your daily" in message.content or "You need to wait" in message.content:
-            await nabots_channel.send("OwO sent:\n{}\nOn {} channel.".format(message.content, nabs_gaes_channel.name))
+            await bots_channel.send("OwO sent:\n{}\nOn {} channel.".format(message.content, general_channel.name))
             await message.delete()
             return
 
         embeds = getattr(message, "embeds")
         if len(embeds):
             if "Here is the list of commands" in message.embeds[0].description:
-                await nabots_channel.send(embeds=message.embeds)
+                await bots_channel.send(embeds=message.embeds)
                 await message.delete()
                 return
+
+async def compute_for_dankmemer(message):
+
+    if message.channel.id == 699053838040039557: # General GNP in GNP guild
+        bots_channel = utils.get(message.guild.text_channels, id=820831827736395816) # bots
+        general_channel = utils.get(message.guild.text_channels, id=699053838040039557) # general
+
+        embeds_descriptions = " ".join([ i.description for i in getattr(message, "embeds")])
+        if "was placed in your wallet" in embeds_descriptions or "Your next daily is ready in" in embeds_descriptions:
+
+            await message.delete()
+            await bots_channel.send("Dank Memer sent:\n{}".format(message.content))
+            await bots_channel.send(embeds=message.embeds)
+            await bots_channel.send("On {} channel.".format(general_channel.name))
+            return
+
 
 async def compute_for_nonbots(message):
     if message.channel.id == 699053838040039557: # General GNP in GNP guild
 
         content = message.content.lower()
         content = [ i for i in content.split(' ') if i ]
+        bots_channel = utils.get(message.guild.text_channels, id=820831827736395816) # bots
 
         if content[0] == "owo":
             if content[1] == "daily" or content[1] == "help":
-                nabots_channel = utils.get(message.guild.text_channels, id=820831827736395816) # nabots
 
-                await nabots_channel.send("{}".format(message.author.mention))
+                await bots_channel.send(
+                    "Hi {}, OwO command _{}_ runs better on bots channel!🐄".format(
+                        message.author.mention,
+                        " ".join(content),
+                    )
+                )
                 await message.delete()
+                return
+
+        elif content[0] == "pls":
+            if content[1] == "daily" or content[1] == "help":
+
+                await bots_channel.send(
+                    "Hi {}, Dank Memer command _{}_ runs better on bots channel!🐄".format(
+                        message.author.mention,
+                        " ".join(content),
+                    )
+                )
+                await message.delete()
+                return
+
+
+        elif content[0][0] == "$": # It's a mudae command
+            await bots_channel.send(
+                "Hi {}, Mudae commands are banned from general 🐄".format(
+                    message.author.mention
+                )
+            )
+            await message.delete()
+            return

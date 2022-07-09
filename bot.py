@@ -23,7 +23,13 @@ from inspect import getmembers # TODO Remove
 from mudae import MudaeTuRecord, MudaeClaimEmbed
 
 import signal
-from utils import print_colors, print_member_list, if_zoo_print, compute_for_owo, compute_for_nonbots
+from utils import \
+    print_colors, \
+    print_member_list, \
+    if_zoo_print, \
+    compute_for_owo, \
+    compute_for_nonbots, \
+    compute_for_dankmemer
 
 def handler_stop_signals(signal, frame):
     print("Good bye!")
@@ -146,13 +152,19 @@ async def on_message(message):
 
     ## Non bot
     if not message.author.bot:
-        await compute_for_nonbots(message)
+        await compute_for_nonbots(message) # for nonbots
         return
 
     ## only for bots
     if message.author.id == bots_id["owo"]: # OwO bot
         await compute_for_owo(message)
         return
+
+    ## dankmemer
+    if message.author.id == bots_id["dankmemer"]: # Dank Memer bot
+        await compute_for_dankmemer(message)
+        return
+
 
     try:
         # Init a mudae $tu record object
