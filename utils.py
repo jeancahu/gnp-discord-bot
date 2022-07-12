@@ -163,36 +163,41 @@ async def compute_for_nonbots(message):
         content = [ i for i in content.split(' ') if i ]
         bots_channel = utils.get(message.guild.text_channels, id=820831827736395816) # bots
 
-        if content[0] == "owo":
-            if content[1] == "daily" or content[1] == "help":
+        try:
+            if content[0] == "owo":
+                if content[1] == "daily" or content[1] == "help":
 
+                    await bots_channel.send(
+                        "Hi {}, OwO command _{}_ runs better on bots channel!🐄".format(
+                            message.author.mention,
+                            " ".join(content),
+                        )
+                    )
+                    await message.delete()
+                    return
+
+            elif content[0] == "pls":
+                if content[1] == "daily" or content[1] == "help":
+
+                    await bots_channel.send(
+                        "Hi {}, Dank Memer command _{}_ runs better on bots channel!🐄".format(
+                            message.author.mention,
+                            " ".join(content),
+                        )
+                    )
+                    await message.delete()
+                    return
+
+
+            elif content[0][0] == "$": # It's a mudae command
                 await bots_channel.send(
-                    "Hi {}, OwO command _{}_ runs better on bots channel!🐄".format(
-                        message.author.mention,
-                        " ".join(content),
+                    "Hi {}, Mudae commands are banned from general 🐄".format(
+                        message.author.mention
                     )
                 )
                 await message.delete()
                 return
 
-        elif content[0] == "pls":
-            if content[1] == "daily" or content[1] == "help":
-
-                await bots_channel.send(
-                    "Hi {}, Dank Memer command _{}_ runs better on bots channel!🐄".format(
-                        message.author.mention,
-                        " ".join(content),
-                    )
-                )
-                await message.delete()
-                return
-
-
-        elif content[0][0] == "$": # It's a mudae command
-            await bots_channel.send(
-                "Hi {}, Mudae commands are banned from general 🐄".format(
-                    message.author.mention
-                )
-            )
-            await message.delete()
-            return
+        except Exception as e:
+            print("Exception: {} on message {}\nmessage.id: {}\tmessage.channel: {}".format(
+                str(e), message.content.lower(), message.id, message.channel.name))

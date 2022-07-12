@@ -4,6 +4,8 @@ from discord import Embed, Member, Intents, utils # Bot TODO
 from discord import __version__ as discord_version
 from discord.ext import commands # it's no needed for 1.7.3> # TODO (Change on 1.7.3 release)
 
+from requests import request
+
 import paho.mqtt.client as mqtt
 import asyncio
 
@@ -199,6 +201,49 @@ async def on_message(message):
 async def on_reaction_add(reaction, user):
     if user.id == bots_id["homuri"]: # Bot itself
         return
+
+    if str(reaction) == '🦥' and reaction.count == 1:
+        print(reaction.message.content)
+
+    if str(reaction) == '🏴󠁧󠁢󠁥󠁮󠁧󠁿' and reaction.count == 1:
+
+        ## Do not translate the bot messages
+        if reaction.message.author.id == bots_id["homuri"]: # Bot itself
+            return
+
+        await reaction.message.add_reaction("🏴󠁧󠁢󠁥󠁮󠁧󠁿")
+        content = reaction.message.content
+
+        for mention in reaction.message.mentions:
+            content = content.replace(mention.mention, "___") # ___ = mention.display_name
+
+        stickers = re.findall('<:[a-zA-Z]*:[0-9]*>', content) ## Save stickers
+        content = re.sub('<:[a-zA-Z]*:[0-9]*>', '', content) ## Delete stickers from feed
+
+        try:
+            response = request(
+                method = "post",
+                url = "https://libretranslate.de/translate", ## TODO: create a self-hosted translation service
+                json = {
+                    "q": content,
+                    "source": "es",
+                    "target": "en",
+                    "format": "text",
+                    "api_key": ""
+                }
+            )
+            content = response.json()["translatedText"]
+
+            ## Restore mentios
+            for i in range(len(re.findall("___", content))):
+                content = content.replace("___", reaction.message.mentions[i].display_name, 1)
+
+            ## Append stickers
+            content = content + " ".join(stickers)
+            await reaction.message.reply(content)
+
+        except Exception as e:
+            await reaction.message.add_reaction("🐪")
 
     try:
         # Init a mudaeClimEmbed record object
