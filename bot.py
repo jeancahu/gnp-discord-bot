@@ -205,6 +205,21 @@ async def on_reaction_add(reaction, user):
     if str(reaction) == '🦥' and reaction.count == 1:
         print(reaction.message.content)
 
+    if str(reaction) == '🌶️' and reaction.count == 1:
+
+        emojis = [
+            "🏳️‍🌈",
+            "🍌",
+            "🥖",
+            "🍆",
+            "💦",
+            "👉",
+            "👌",
+        ]
+
+        for emoji in emojis:
+            await reaction.message.add_reaction(emoji)
+
     if str(reaction) == "🥖" and reaction.count == 1:
 
         ## Do not translate the bot messages
