@@ -205,6 +205,47 @@ async def on_reaction_add(reaction, user):
     if str(reaction) == '🦥' and reaction.count == 1:
         print(reaction.message.content)
 
+    if str(reaction) == "🥖" and reaction.count == 1:
+
+        ## Do not translate the bot messages
+        if reaction.message.author.id == bots_id["homuri"]: # Bot itself
+            return
+
+        await reaction.message.add_reaction("🥖")
+        content = reaction.message.content
+
+        for mention in reaction.message.mentions:
+            content = content.replace(mention.mention, "___") # ___ = mention.display_name
+
+        stickers = re.findall('<:[a-zA-Z]*:[0-9]*>', content) ## Save stickers
+        content = re.sub('<:[a-zA-Z]*:[0-9]*>', '', content) ## Delete stickers from feed
+
+        try:
+            response = request(
+                method = "post",
+                url = "https://libretranslate.de/translate", ## TODO: create a self-hosted translation service
+                json = {
+                    "q": content,
+                    "source": "fr",
+                    "target": "en",
+                    "format": "text",
+                    "api_key": ""
+                }
+            )
+            content = response.json()["translatedText"]
+
+            ## Restore mentios
+            for i in range(len(re.findall("___", content))):
+                content = content.replace("___", reaction.message.mentions[i].display_name, 1)
+
+            ## Append stickers
+            content = content + " ".join(stickers)
+            await reaction.message.reply(content)
+        except Exception as e:
+            await reaction.message.add_reaction("🐪")
+
+        return
+
     if str(reaction) == '🏴󠁧󠁢󠁥󠁮󠁧󠁿' and reaction.count == 1:
 
         ## Do not translate the bot messages
@@ -244,6 +285,8 @@ async def on_reaction_add(reaction, user):
 
         except Exception as e:
             await reaction.message.add_reaction("🐪")
+
+        return
 
     try:
         # Init a mudaeClimEmbed record object
@@ -519,10 +562,10 @@ async def randreact(ctx):
         ])
 
 
-# Command Homuri
+# Homuri Command
 bot.command(name="homuri")(name)
 
-# Command Ping
+# Ping Command
 bot.command()(ping)
 
 ## Run
