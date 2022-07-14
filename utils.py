@@ -1,6 +1,10 @@
 from math import modf as fract
 from time import time
+import re
+from requests import request
+
 from discord import utils
+
 
 ## Util functions
 def mins_hours_until (seconds):
@@ -201,3 +205,43 @@ async def compute_for_nonbots(message):
         except Exception as e:
             print("Exception: {} on message {}\nmessage.id: {}\tmessage.channel: {}".format(
                 str(e), message.content.lower(), message.id, message.channel.name))
+
+
+async def translate(reaction, symbol, lang):
+    if not str(reaction) == symbol or reaction.count > 1:
+        ## It is not the trigger reaction
+        return
+
+    await reaction.message.add_reaction(symbol)
+    content = reaction.message.content
+
+    for mention in reaction.message.mentions:
+        content = content.replace(mention.mention, "___") # ___ = mention.display_name
+
+    stickers = re.findall('<:[a-zA-Z]*:[0-9]*>', content) ## Save stickers
+    content = re.sub('<:[a-zA-Z]*:[0-9]*>', '', content) ## Delete stickers from feed
+
+    try:
+        response = request(
+            method = "post",
+            url = "https://libretranslate.de/translate", ## TODO: create a self-hosted translation service
+            json = {
+                "q": content,
+                "source": lang,
+                "target": "en",
+                "format": "text",
+                "api_key": ""
+            }
+        )
+        content = response.json()["translatedText"]
+
+        ## Restore mentios
+        for i in range(len(re.findall("___", content))):
+            content = content.replace("___", reaction.message.mentions[i].display_name, 1)
+
+        ## Append stickers
+        content = content + " ".join(stickers)
+        await reaction.message.reply(content)
+    except Exception as e:
+        print("Error on translation: {}".format(str(e)))
+        await reaction.message.add_reaction("🐪")
