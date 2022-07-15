@@ -15,12 +15,11 @@ from AntiScam import AntiScam
 from asyncio import gather
 
 from commands import ping, name
-from constants import user_list, gnp_guild_id, bots_id
+from constants import user_list, channel_list, gnp_guild_id, bots_id
 
 import re
 import numpy as np
 
-from inspect import getmembers # TODO Remove
 from mudae import MudaeTuRecord, MudaeClaimEmbed
 
 import signal
@@ -54,10 +53,24 @@ def only_for_user(user_id): # Functions who returns a decorator
     async def predicate(ctx):
         if not ctx.author.id == user_id:
             authored_user = utils.get(ctx.guild.members, id=user_id)
-            new_message = await ctx.send("Hey, you are not {}!".format(authored_user.display_name))
+            new_message = await ctx.send("*Hey, you are not {}!*".format(authored_user.display_name))
             sleep(3)
             await new_message.delete()
             await ctx.message.delete()
+            return False
+        return True
+    return commands.check(predicate)
+
+def deny_user_list(user_id_list=[]): # Functions who returns a decorator
+    async def predicate(ctx):
+        if  ctx.author.id in user_id_list:
+            return False
+        return True
+    return commands.check(predicate)
+
+def deny_channel_list(channel_id_list=[]): # Functions who returns a decorator
+    async def predicate(ctx):
+        if  ctx.channel.id in channel_id_list:
             return False
         return True
     return commands.check(predicate)
@@ -232,7 +245,7 @@ async def on_reaction_add(reaction, user):
 
     await translate(reaction, "🥖", "fr")
     await translate(reaction, '🏴󠁧󠁢󠁥󠁮󠁧󠁿', "es")
-    await translate(reaction, '⚽', "br")
+    await translate(reaction, '⚽', "pt")
 
     try:
         # Init a mudaeClimEmbed record object
@@ -357,7 +370,7 @@ async def roles(ctx, *, member: MemberRoles = None):
         return
     await ctx.send('I see the following roles: **{}**'.format('**, **'.join([str(i) for i in ctx.author.roles[1:]]))) # [1:] removes everyone role
 
-@bot.command()
+@bot.command(name="ign", aliases=["ing", "igns", "ings"])
 @guild_only(gnp_guild_id) # Works for gnp server only
 async def ign(ctx, member: Member = None, *, ign = None):
     """
@@ -377,7 +390,7 @@ async def ign(ctx, member: Member = None, *, ign = None):
         rows_str = []
         for a,b in rows:
 
-            temp_str = "{} -" + " "*(max_len - len(b)) + " {}"
+            temp_str = "{} " + " "*(max_len - len(b)) + "- {}"
             rows_str.append(temp_str.format(b,a))
 
 
@@ -460,11 +473,15 @@ async def unshabi(ctx, *, member: Member = None):
 @bot.command(name="mute", aliases=["m"])
 @commands.has_permissions(administrator=True)
 @guild_only(gnp_guild_id) # Works for gnp server only
-async def mute(ctx, *, member: Member):
+async def mute(ctx, *, member: Member = None):
     """
     Tells you a member's roles.
     * means next arguments will be named args
     """
+
+    if not member or member.bot:
+        return
+
     mute_role =   utils.get(ctx.guild.roles, id=912781839633096734)
     member_role = utils.get(ctx.guild.roles, id=912783144015528016)
 
@@ -526,6 +543,7 @@ async def avatar(ctx, *, member: Member = None):
     await ctx.message.reply('{}'.format(ctx.author.avatar.url))
 
 @bot.command(name="emojis", aliases=["emoji"])
+@deny_channel_list([channel_list["nabsgaes"], channel_list["songs"]])
 async def emojis(ctx):
     """
     Guild emojis
@@ -546,6 +564,15 @@ async def emojis(ctx):
         )
     )
 
+@bot.command(name="samus", aliases=["sami"])
+@only_for_user(user_list["samus"])
+async def samus(ctx):
+    """
+    Samus command
+    """
+    await ctx.message.add_reaction("🍌")
+
+
 @bot.command(name="randreact", aliases=["rreact", "rr"])
 async def randreact(ctx):
     """
@@ -565,7 +592,7 @@ async def randreact(ctx):
 
 
 # Homuri Command
-bot.command(name="homuri")(name)
+bot.command(name="homuri", aliases=["hi"])(name)
 
 # Ping Command
 bot.command()(ping)
