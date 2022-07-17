@@ -371,7 +371,6 @@ async def roles(ctx, *, member: MemberRoles = None):
     await ctx.send('I see the following roles: **{}**'.format('**, **'.join([str(i) for i in ctx.author.roles[1:]]))) # [1:] removes everyone role
 
 @bot.command(name="ign", aliases=["ing", "igns", "ings"])
-@guild_only(gnp_guild_id) # Works for gnp server only
 async def ign(ctx, member: Member = None, *, ign = None):
     """
     Tells you a member's IGN.
@@ -384,7 +383,9 @@ async def ign(ctx, member: Member = None, *, ign = None):
                 utils.get(ctx.guild.members, id=row[0]).display_name,
                 row[2]
             ]
-            for row in database.pull_ign() if row[1]][:20]
+            for row in database.pull_ign()
+            if row[1] and utils.get(ctx.guild.members, id=row[0])
+        ][:20]
 
         max_len = np.max([len(b) for a,b in rows])
         rows_str = []
@@ -449,7 +450,6 @@ async def shabi(ctx, *, member: Member = None):
         await ctx.message.add_reaction("😥")
 
 @bot.command()
-@only_for_user(user_list["redguard"])
 async def unshabi(ctx, *, member: Member = None):
     """
     Prepends SHABI to the display name of given member
