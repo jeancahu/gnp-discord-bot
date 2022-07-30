@@ -137,12 +137,15 @@ async def compute_for_owo(message):
             await message.delete()
             return
 
-        embeds = getattr(message, "embeds")
-        if len(embeds):
-            if "Here is the list of commands" in message.embeds[0].description:
-                await bots_channel.send(embeds=message.embeds)
-                await message.delete()
-                return
+        try:
+            embeds = getattr(message, "embeds")
+            if len(embeds):
+                if "Here is the list of commands" in message.embeds[0].description:
+                    await bots_channel.send(embeds=message.embeds)
+                    await message.delete()
+                    return
+        except TypeError as e:
+            return
 
 async def compute_for_dankmemer(message):
 

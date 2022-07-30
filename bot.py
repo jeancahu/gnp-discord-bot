@@ -75,6 +75,14 @@ def deny_channel_list(channel_id_list=[]): # Functions who returns a decorator
         return True
     return commands.check(predicate)
 
+def get_role_by_lowername(guild, role_name):
+    role = [ role for role in guild.roles if role.name.lower() == role_name]
+
+    if not role:
+        raise KeyError("Role does not exist in the given guild")
+
+    return role[0]
+
 try:
     TOKEN = open("TOKEN").readline().replace('\n','')
 except Exception as e:
@@ -243,9 +251,10 @@ async def on_reaction_add(reaction, user):
             await reaction.message.add_reaction(emoji)
 
 
-    await translate(reaction, "🥖", "fr")
-    await translate(reaction, '🏴󠁧󠁢󠁥󠁮󠁧󠁿', "es")
-    await translate(reaction, '⚽', "pt")
+    if not user.id in [user_list["matler"]]:
+        await translate(reaction, "🥖", "fr")
+        await translate(reaction, '🏴󠁧󠁢󠁥󠁮󠁧󠁿', "es")
+        await translate(reaction, '⚽', "pt")
 
     try:
         # Init a mudaeClimEmbed record object
@@ -402,10 +411,12 @@ async def ign(ctx, member: Member = None, *, ign = None):
         return
 
     if ign:
-        if ctx.message.author.id == member.id or \
-           ctx.message.author.id == user_list["carrera"] or \
-           ctx.message.author.id == user_list["homura"] or \
-           ctx.message.author.id == user_list["mondo"]:
+        if ctx.message.author.id in [
+                member.id,
+                user_list["carrera"],
+                user_list["homura"],
+                user_list["mondo"]
+        ]:
             database.save_ign(
                 member.id,
                 True,
@@ -482,8 +493,12 @@ async def mute(ctx, *, member: Member = None):
     if not member or member.bot:
         return
 
-    mute_role =   utils.get(ctx.guild.roles, id=912781839633096734)
-    member_role = utils.get(ctx.guild.roles, id=912783144015528016)
+    try:
+        mute_role =   get_role_by_lowername(ctx.guild, "muted")
+        member_role = get_role_by_lowername(ctx.guild, "member")
+    except Exception as e:
+        print("Error: {}, at least one of both roles does not exist.".format(str(e)))
+        return
 
     await member.add_roles(mute_role)
     await member.remove_roles(member_role)
@@ -497,8 +512,6 @@ async def muted_members(ctx):
     Tells you a member's roles.
     * means next arguments will be named args
     """
-    mute_role =   utils.get(ctx.guild.roles, id=912781839633096734)
-    member_role = utils.get(ctx.guild.roles, id=912783144015528016)
 
     await ctx.message.add_reaction("👍")
     print(
@@ -522,8 +535,12 @@ async def unmute(ctx, *, member: Member):
     Tells you a member's roles.
     * means next arguments will be named args
     """
-    mute_role =   utils.get(ctx.guild.roles, id=912781839633096734)
-    member_role = utils.get(ctx.guild.roles, id=912783144015528016)
+    try:
+        mute_role =   get_role_by_lowername(ctx.guild, "muted")
+        member_role = get_role_by_lowername(ctx.guild, "member")
+    except Exception as e:
+        print("Error: {}, at least one of both roles does not exist.".format(str(e)))
+        return
 
     await member.add_roles(member_role)
     await member.remove_roles(mute_role)
