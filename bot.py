@@ -2,7 +2,7 @@
 
 from discord import Embed, Member, Intents, utils # Bot TODO
 from discord import __version__ as discord_version
-from discord.ext import commands # it's no needed for 1.7.3> # TODO (Change on 1.7.3 release)
+from discord.ext import commands, tasks # it's no needed for 1.7.3> # TODO (Change on 1.7.3 release)
 
 import paho.mqtt.client as mqtt
 import asyncio
@@ -222,6 +222,22 @@ async def on_message(message):
             pass
         return
 
+
+## Translations buffer
+translations = []
+
+## Translations loop to delete old translations
+@tasks.loop(minutes=1)
+async def delete_translations():
+    if not translations:
+        return
+
+    # If message is old (sent more than 3 hours ago)
+    if translations[-1][0] < int(time()/60):
+        translation = translations.pop()
+        await translation[1].delete()
+
+## On reaction translates
 @bot.listen()
 async def on_reaction_add(reaction, user):
     ## Ignore bot reactions
@@ -250,11 +266,9 @@ async def on_reaction_add(reaction, user):
         for emoji in emojis:
             await reaction.message.add_reaction(emoji)
 
-
-    if not user.id in [user_list["matler"]]:
-        await translate(reaction, "🥖", "fr")
-        await translate(reaction, '🏴󠁧󠁢󠁥󠁮󠁧󠁿', "es")
-        await translate(reaction, '⚽', "pt")
+    await translate(reaction, "🥖", "fr", translations)
+    await translate(reaction, '🏴󠁧󠁢󠁥󠁮󠁧󠁿', "es", translations)
+    await translate(reaction, '⚽', "pt", translations)
 
     try:
         # Init a mudaeClimEmbed record object
@@ -615,4 +629,5 @@ bot.command(name="homuri", aliases=["hi"])(name)
 bot.command()(ping)
 
 ## Run
+delete_translations.start()
 bot.run(TOKEN)

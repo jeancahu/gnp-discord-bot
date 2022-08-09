@@ -209,8 +209,7 @@ async def compute_for_nonbots(message):
             print("Exception: {} on message {}\nmessage.id: {}\tmessage.channel: {}".format(
                 str(e), message.content.lower(), message.id, message.channel.name))
 
-
-async def translate(reaction, symbol, lang):
+async def translate(reaction, symbol, lang, translations):
     if not str(reaction) == symbol or reaction.count > 1:
         ## It is not the trigger reaction
         return
@@ -244,7 +243,11 @@ async def translate(reaction, symbol, lang):
 
         ## Append stickers
         content = content + " ".join(stickers)
-        await reaction.message.reply(content)
+        translation = await reaction.message.reply(content)
+
+        # Add at the begin of translation message list (add 3 hours lifetime)
+        translations.insert(0, [int(time()/60) + 60*3 , translation])
+
     except Exception as e:
         print("Error on translation: {}".format(str(e)))
         await reaction.message.add_reaction("🐪")
