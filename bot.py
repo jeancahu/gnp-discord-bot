@@ -251,7 +251,12 @@ async def on_reaction_add(reaction, user):
     if str(reaction) == '🦥' and reaction.count == 1:
         print(reaction.message.content)
 
+
     if str(reaction) == '🌶️' and reaction.count == 1:
+
+        ## Works only for GNP
+        if reaction.message.guild.id != gnp_guild_id:
+            return
 
         emojis = [
             "🏳️‍🌈",
@@ -421,13 +426,13 @@ async def ign(ctx, member: Member = None, *, ign = None):
         result = "```\n{}\n```".format("\n".join(rows_str))
         await ctx.message.reply(result)
         return
+
     if member.bot:
         return
 
     if ign:
         if ctx.message.author.id in [
                 member.id,
-                user_list["carrera"],
                 user_list["homura"],
                 user_list["mondo"]
         ]:
