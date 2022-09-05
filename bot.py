@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # GNP Bot
 
 from discord import Embed, Member, Intents, utils # Bot TODO
