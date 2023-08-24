@@ -16,6 +16,8 @@ pip install -r requirements.txt
 
 ### Run the server daemon
 
-```bash
+Run the main daemon:
 
+```bash
+bash server.sh
 ```
