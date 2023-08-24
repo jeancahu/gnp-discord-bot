@@ -514,7 +514,7 @@ async def mma(ctx, *, member: Member = None):
         return
 
     try:
-        admin_role =   get_role_by_lowername(ctx.guild, "ADMIN")
+        admin_role =   get_role_by_lowername(ctx.guild, "ADMN")
     except Exception as e:
         print("Error: {}, at least one of both roles does not exist.".format(str(e)))
         return
