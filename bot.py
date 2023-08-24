@@ -11,7 +11,7 @@ import asyncio
 from sys import exit
 from time import sleep, time
 from random import choice, sample
-from AntiScam import AntiScam
+# from AntiScam import AntiScam ## TODO remove dependency??
 
 from asyncio import gather
 
