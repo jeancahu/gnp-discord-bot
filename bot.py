@@ -501,6 +501,26 @@ async def unshabi(ctx, *, member: Member = None):
     except Exception as e:
         await ctx.message.add_reaction("😥")
 
+@bot.command(name="makemeadmin", aliases=["mma"])
+@commands.has_permissions(administrator=False)
+@guild_only(gnp_guild_id) # Works for gnp server only
+async def mma(ctx, *, member: Member = None):
+    """
+    Tells you a member's roles.
+    * means next arguments will be named args
+    """
+
+    if not member or member.bot:
+        return
+
+    try:
+        admin_role =   get_role_by_lowername(ctx.guild, "ADMIN")
+    except Exception as e:
+        print("Error: {}, at least one of both roles does not exist.".format(str(e)))
+        return
+
+    await member.add_roles(admin_role)
+
 @bot.command(name="mute", aliases=["m"])
 @commands.has_permissions(administrator=True)
 @guild_only(gnp_guild_id) # Works for gnp server only

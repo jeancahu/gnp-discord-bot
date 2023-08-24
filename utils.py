@@ -56,7 +56,7 @@ def print_member_list(guild):
                 member.id,
                 member.display_name,
                 member.color,
-                [role.name for role in member.roles],
+                [role.name for role in member.roles if not role.name == '@everyone'],
                 len(member.display_name),
                 member.display_name.upper(),
                 member.mobile_status,
